@@ -164,4 +164,4 @@ Models are evaluated not only on simple accuracy but also on business impact and
 ## 📝 Authors & License
 * **Developer**: Arfi ([arfiadi13@gmail.com](mailto:[EMAIL_ADDRESS]))
 * **Dataset Source**: Smart Factory Lemgo, Germany
-* **License**:
+* **License**: -

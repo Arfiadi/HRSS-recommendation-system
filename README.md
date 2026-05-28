@@ -4,7 +4,6 @@
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
 [![Framework](https://img.shields.io/badge/framework-Streamlit%20%7C%20FastAPI-red.svg)]()
 [![ML Ops](https://img.shields.io/badge/MLops-MLflow%20%7C%20PyCaret-orange.svg)]()
-[![License](https://img.shields.io/badge/license-MIT-green.svg)]()
 
 ---
 

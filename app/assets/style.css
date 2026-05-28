@@ -1,1 +1,17 @@
-/* Placeholder stylesheet */
+/* ============================================================
+   HRSS Dashboard — Custom Stylesheet
+   ============================================================
+
+   File ini akan berisi:
+   - Custom CSS untuk styling Streamlit dashboard
+   - Warna tema (primary, secondary, accent)
+   - Card/panel styling untuk metrik dan rekomendasi
+   - Responsive layout adjustments
+
+   Contoh:
+   .main { background-color: #0e1117; }
+   .stMetric { background: linear-gradient(...); border-radius: 12px; }
+   .recommendation-card { border-left: 4px solid #00d4aa; padding: 1rem; }
+
+   TODO: Implement dashboard styling.
+============================================================ */

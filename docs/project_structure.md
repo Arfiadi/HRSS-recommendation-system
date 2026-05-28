@@ -123,6 +123,12 @@ HRSS_recommendation_system/
 │   │   ├── decision_policy.py
 │   │   ├── scoring.py
 │   │
+│   ├── pipeline/
+│   │   ├── __init__.py
+│   │   ├── train_pipeline.py
+│   │   ├── inference_pipeline.py
+│   │   ├── pipeline_utils.py
+│   │
 │   ├── services/
 │   │   ├── __init__.py
 │   │   ├── inference_service.py
@@ -309,11 +315,19 @@ Logika rekomendasi industri:
 * decision policy
 * scoring system
 
+### pipeline/
+Orchestration layer (alur eksekusi end-to-end):
+* train_pipeline → orchestration training flow (data → preprocess → feature → model → evaluate → MLflow)
+* inference_pipeline → orchestration inference flow (input → preprocess → predict → recommend)
+* pipeline_utils → helper functions untuk pipeline
+
+👉 Pipeline menyusun urutan alur, services menyediakan kemampuan.
+
 ### services/
-Unified system layer:
-* inference service
-* prediction service
-* recommendation service
+Reusable logic layer:
+* inference service → unified entry point
+* prediction service → wrapper inference logic (reusable oleh API, Streamlit, pipeline)
+* recommendation service → wrapper decision system
 
 ### streaming/
 Streaming ingestion dan pemrosesan (Future Scale).

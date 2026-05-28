@@ -1,2 +1,26 @@
-# Placeholder config
+# ============================================================
+# Feature Configuration — Feature Engineering Rules
+# ============================================================
+#
+# Berisi definisi fitur yang akan dibuat:
+#
+# power_features:
+#   - name: "total_power"
+#     formula: "sum of all *_power columns"
+#   - name: "avg_voltage"
+#     formula: "mean of all *_voltage columns"
+#
+# movement_features:
+#   - name: "total_movement"
+#     formula: "sum of all *_Weg columns"
+#   - name: "rail_activity"
+#     formula: "sum(I_w_HR_Weg, I_w_HL_Weg)"
+#   - name: "conveyor_activity"
+#     formula: "sum(I_w_BLO_Weg, I_w_BHL_Weg, I_w_BHR_Weg)"
+#
+# efficiency_features:
+#   - name: "energy_efficiency_ratio"
+#     formula: "total_movement / (total_power + epsilon)"
+#
+# TODO: Implement feature engineering configuration.
 ---

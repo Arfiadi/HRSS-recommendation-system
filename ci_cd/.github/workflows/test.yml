@@ -1,2 +1,31 @@
-# Placeholder config
----
+# ============================================================
+# CI Pipeline — Automated Testing
+# ============================================================
+#
+# Workflow ini akan menjalankan:
+# - Unit tests (pytest tests/unit/)
+# - Integration tests (pytest tests/integration/)
+# - Linting (flake8, black --check)
+# - Coverage report
+#
+# Trigger: push ke branch main, pull request
+#
+# name: CI Tests
+# on:
+#   push:
+#     branches: [main]
+#   pull_request:
+#     branches: [main]
+#
+# jobs:
+#   test:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - uses: actions/setup-python@v4
+#         with:
+#           python-version: '3.9'
+#       - run: pip install -e .[dev]
+#       - run: pytest tests/ --cov=src
+#
+# TODO: Implement CI workflow.

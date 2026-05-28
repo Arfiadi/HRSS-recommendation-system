@@ -1,2 +1,25 @@
-# Placeholder config
+# ============================================================
+# Global Configuration — HRSS Recommendation System
+# ============================================================
+#
+# Berisi pengaturan global proyek:
+#
+# project:
+#   name: "HRSS Recommendation System"
+#   version: "0.1.0"
+#   random_seed: 42
+#
+# paths:
+#   raw_data: "data/raw/"
+#   processed_data: "data/processed/"
+#   splits: "data/splits/"
+#   models: "outputs/models/"
+#   figures: "outputs/figures/"
+#   reports: "outputs/reports/"
+#
+# mlflow:
+#   tracking_uri: "./experiments/mlruns"
+#   experiment_name: "hrss-classification"
+#
+# TODO: Implement configuration values sesuai kebutuhan proyek.
 ---

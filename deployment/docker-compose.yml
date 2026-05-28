@@ -1,3 +1,25 @@
-version: '3.8'
-services:
-  # Placeholder service
+# ============================================================
+# Docker Compose — Orchestration multi-container
+# ============================================================
+#
+# Services yang akan di-orchestrate:
+# - app: Streamlit dashboard (port 8501)
+# - api: FastAPI inference service (port 8000)
+# - mlflow: MLflow tracking server (port 5000)
+#
+# version: '3.8'
+# services:
+#   app:
+#     build:
+#       context: ../
+#       dockerfile: deployment/docker/Dockerfile
+#     ports:
+#       - "8501:8501"
+#   api:
+#     build:
+#       context: ../
+#       dockerfile: deployment/docker/Dockerfile.api
+#     ports:
+#       - "8000:8000"
+#
+# TODO: Implement docker-compose configuration.

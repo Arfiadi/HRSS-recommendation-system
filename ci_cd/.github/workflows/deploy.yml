@@ -1,2 +1,25 @@
-# Placeholder config
----
+# ============================================================
+# CD Pipeline — Automated Deployment
+# ============================================================
+#
+# Workflow ini akan menjalankan:
+# - Build Docker image
+# - Push ke container registry
+# - Deploy ke staging/production environment
+#
+# Trigger: push tag (v*.*.*)
+#
+# name: Deploy
+# on:
+#   push:
+#     tags: ['v*.*.*']
+#
+# jobs:
+#   deploy:
+#     runs-on: ubuntu-latest
+#     steps:
+#       - uses: actions/checkout@v3
+#       - run: docker build -t hrss-app -f deployment/docker/Dockerfile .
+#       - run: docker push ...
+#
+# TODO: Implement CD workflow.

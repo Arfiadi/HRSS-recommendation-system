@@ -104,3 +104,7 @@ models/
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# CatBoost and PyCaret Temp Files
+catboost_info/
+experiments/notebooks/catboost_info/

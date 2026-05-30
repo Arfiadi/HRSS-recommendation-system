@@ -1,33 +1,14 @@
-# ============================================================
-# Model Configuration — Hyperparameters & Model Settings
-# ============================================================
-#
-# Berisi konfigurasi model ML:
-#
-# target_column: "operation_type"
-# test_size: 0.2
-# random_seed: 42
-#
-# model_candidates:
-#   - logistic_regression
-#   - decision_tree
-#   - random_forest
-#   - xgboost
-#
-# evaluation_metrics:
-#   primary:
-#     - f1_macro
-#     - roc_auc
-#   risk:
-#     - false_negative_rate
-#     - false_positive_rate
-#   secondary:
-#     - precision_class_1
-#     - recall_class_1
-#
-# pycaret:
-#   fold: 5
-#   sort_metric: "F1"
-#
-# TODO: Implement model configuration values.
----
+target_column: "operation_type"
+test_size: 0.2
+random_seed: 42
+
+model_candidates:
+  - lr
+  - dt
+  - rf
+  - xgboost
+  - lightgbm
+
+pycaret:
+  fold: 5
+  sort_metric: "F1"

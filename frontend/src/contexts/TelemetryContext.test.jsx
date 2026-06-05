@@ -55,6 +55,26 @@ describe('TelemetryContext Integration', () => {
       if (url.includes('/health')) {
         return Promise.resolve({ ok: true });
       }
+      if (url.includes('/simulate/telemetry')) {
+        return Promise.resolve({
+          ok: true,
+          json: () => Promise.resolve({
+            O_w_BLO_power: 1000,
+            O_w_BHL_power: 1000,
+            O_w_BHR_power: 1000,
+            O_w_BRU_power: 1000,
+            O_w_HR_power: 1000,
+            O_w_HL_power: 1000,
+            O_w_BLO_voltage: 220,
+            O_w_BHL_voltage: 220,
+            O_w_BHR_voltage: 220,
+            O_w_BRU_voltage: 220,
+            O_w_HR_voltage: 220,
+            O_w_HL_voltage: 220,
+            Timestamp: 1622505600
+          })
+        });
+      }
       if (url.includes('/recommend')) {
         return Promise.resolve({
           ok: true,

@@ -46,7 +46,7 @@ class HRSSRuleEngine:
                     "Pertimbangkan optimasi algoritma routing (shortest path) pada WMS."
                 )
 
-        # Rule 2: Mechanical Friction / Overload (Daya tinggi, pergerakan minim)
+        # Rule 2: Inefficient High Power (Daya tinggi, pergerakan minim)
         if "total_power" in df.columns and "total_movement" in df.columns:
             tot_pwr = df["total_power"].values[0]
             tot_mvt = df["total_movement"].values[0]
@@ -55,17 +55,17 @@ class HRSSRuleEngine:
                 and tot_mvt < self.rules_config["total_movement_low"]
             ):
                 alerts.append(
-                    "Overload/Friction Warning: Tarikan total arus/daya tinggi tanpa pergerakan mekanis yang proporsional. "
-                    "Lakukan inspeksi keausan guide rail atau cek batas maksimum muatan hoist."
+                    "Movement Inefficiency: Tarikan daya listrik (Watt) terpantau tinggi namun pergerakan mekanis rel sangat minim. "
+                    "Hal ini mengindikasikan adanya pergerakan idle (idle movement) yang menyebabkan pemborosan daya secara signifikan."
                 )
 
-        # Rule 3: Electrical Voltage Drop (DC Bus) (Drop tegangan di bawah batas aman)
+        # Rule 3: Electrical Power Instability (DC Bus)
         if "avg_voltage" in df.columns:
             avg_volt = df["avg_voltage"].values[0]
             if avg_volt < self.rules_config["avg_voltage_drop"]:
                 alerts.append(
-                    "Voltage Sag Anomaly: Tegangan rata-rata turun di bawah batas aman. "
-                    "Hindari memberikan command akselerasi serentak pada multi-sumbu (X dan Y axis) untuk mencegah trip/reset sistem."
+                    "Power Instability: Tegangan rata-rata operasional sistem menurun. "
+                    "Sistem pergerakan lintasan secara serentak (simultaneous) mungkin kurang optimal pada voltase ini, pertimbangkan pola Standard untuk efisiensi yang lebih baik."
                 )
 
         logger.info("Rule evaluation complete. Alerts triggered: %d", len(alerts))

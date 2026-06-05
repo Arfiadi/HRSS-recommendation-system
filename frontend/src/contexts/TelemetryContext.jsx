@@ -40,61 +40,14 @@ export const TelemetryProvider = ({ children }) => {
   // Removed the unmount clearing interval, so it runs globally!
   // ONLY clear it when explicitly told to via stopSimulation.
 
-  const generateTelemetry = (scenarioType) => {
-    const timestamp = Date.now() / 1000;
-    const isOpt = scenarioType === 'Optimized';
-    const noise = (scale) => (Math.random() - 0.5) * scale;
-    
-    if (isOpt) {
-      return {
-        Timestamp: timestamp,
-        I_w_BLO_Weg: 39.05 + noise(1.0),
-        I_w_BHL_Weg: 55.99 + noise(1.0),
-        I_w_BHR_Weg: -8.84 + noise(0.5),
-        I_w_BRU_Weg: 357.59 + noise(10.0),
-        I_w_HR_Weg: -404.84 + noise(5.0),
-        I_w_HL_Weg: -404.84 + noise(5.0),
-        
-        O_w_BLO_power: 5422.11 + noise(100.0),
-        O_w_BHL_power: 4160.88 + noise(100.0),
-        O_w_BHR_power: 4488.58 + noise(100.0),
-        O_w_BRU_power: 6512.66 + noise(150.0),
-        O_w_HR_power: 11526.51 + noise(200.0),
-        O_w_HL_power: 12510.63 + noise(200.0),
-        
-        O_w_BLO_voltage: 14.72 + noise(0.5),
-        O_w_BHL_voltage: 21.43 + noise(0.5),
-        O_w_BHR_voltage: 25.30 + noise(0.5),
-        O_w_BRU_voltage: 17.18 + noise(0.5),
-        O_w_HR_voltage: 52.99 + noise(1.0),
-        O_w_HL_voltage: 52.80 + noise(1.0),
-      };
-    } else {
-      return {
-        Timestamp: timestamp,
-        I_w_BLO_Weg: 44.00 + noise(1.0),
-        I_w_BHL_Weg: 56.80 + noise(1.0),
-        I_w_BHR_Weg: 42.24 + noise(1.0),
-        I_w_BRU_Weg: 429.01 + noise(10.0),
-        I_w_HR_Weg: -411.70 + noise(5.0),
-        I_w_HL_Weg: -411.70 + noise(5.0),
-        
-        O_w_BLO_power: 4923.84 + noise(100.0),
-        O_w_BHL_power: 6996.66 + noise(100.0),
-        O_w_BHR_power: 6196.42 + noise(100.0),
-        O_w_BRU_power: 5116.81 + noise(150.0),
-        O_w_HR_power: 11341.64 + noise(200.0),
-        O_w_HL_power: 13153.05 + noise(200.0),
-        
-        O_w_BLO_voltage: 12.82 + noise(0.5),
-        O_w_BHL_voltage: 18.50 + noise(0.5),
-        O_w_BHR_voltage: 17.94 + noise(0.5),
-        O_w_BRU_voltage: 13.17 + noise(0.5),
-        O_w_HR_voltage: 50.29 + noise(1.0),
-        O_w_HL_voltage: 50.11 + noise(1.0),
-      };
+  const stepIndexRef = useRef(0);
+
+  useEffect(() => {
+    stepIndexRef.current = 0;
+    if (isSimulating) {
+      runSimulationStep(scenario);
     }
-  };
+  }, [scenario, isSimulating]);
 
   const fetchRecommendation = async (telemetry) => {
     try {
@@ -111,10 +64,21 @@ export const TelemetryProvider = ({ children }) => {
       const totalP = (telemetry.O_w_BLO_power + telemetry.O_w_BHL_power + telemetry.O_w_BHR_power + telemetry.O_w_BRU_power + telemetry.O_w_HR_power + telemetry.O_w_HL_power) / 1000;
       const avgV = (telemetry.O_w_BLO_voltage + telemetry.O_w_BHL_voltage + telemetry.O_w_BHR_voltage + telemetry.O_w_BRU_voltage + telemetry.O_w_HR_voltage + telemetry.O_w_HL_voltage) / 6;
       
-      setStats({
-        totalPower: totalP,
-        avgVoltage: avgV,
-        powerEfficiency: result.efficiency_score / 100
+      setStats(prev => {
+        const baselinePower = 14.5; // Average power of Standard mode
+        let saved = 0;
+        // Accumulate savings if the AI confirms operation is optimized and power is below baseline
+        if (result.ml_predicted_profile !== 'NON-OPTIMIZED' && totalP < baselinePower) {
+          // Accumulate a scaled value for demo visibility (since simulation runs fast)
+          saved = (baselinePower - totalP) * 0.1;
+        }
+
+        return {
+          totalPower: totalP,
+          avgVoltage: avgV,
+          powerEfficiency: result.efficiency_score / 100,
+          totalEnergySaved: (prev.totalEnergySaved || 0) + saved
+        };
       });
       
       setChartData(prev => {
@@ -135,15 +99,23 @@ export const TelemetryProvider = ({ children }) => {
 
   const runSimulationStep = async (currentScenario) => {
     setLoading(true);
-    const telemetry = generateTelemetry(currentScenario);
-    await fetchRecommendation(telemetry);
-    setLoading(false);
+    try {
+      const idx = stepIndexRef.current;
+      const res = await fetch(`http://localhost:8000/api/v1/simulate/telemetry?scenario=${currentScenario}&index=${idx}`);
+      if (!res.ok) throw new Error("Failed to fetch simulated telemetry");
+      const telemetry = await res.json();
+      await fetchRecommendation(telemetry);
+      stepIndexRef.current += 1;
+    } catch (e) {
+      console.error("Failed to run simulation step:", e);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const startSimulation = () => {
     if (isSimulating) return;
     setIsSimulating(true);
-    runSimulationStep(scenario);
     simulationIntervalRef.current = setInterval(() => {
       setScenario(prevScenario => {
         runSimulationStep(prevScenario);

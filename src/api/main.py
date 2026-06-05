@@ -13,6 +13,7 @@ load_dotenv()
 from src.api.routes.health import router as health_router
 from src.api.routes.prediction import router as prediction_router
 from src.api.routes.recommendation import router as recommendation_router
+from src.api.routes.simulation import router as simulation_router
 from src.services.inference_service import InferenceService
 
 # Setup logging
@@ -68,3 +69,4 @@ app.add_middleware(
 app.include_router(health_router)
 app.include_router(prediction_router, prefix="/api/v1")
 app.include_router(recommendation_router, prefix="/api/v1")
+app.include_router(simulation_router, prefix="/api/v1")

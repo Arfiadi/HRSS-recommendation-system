@@ -60,41 +60,6 @@ describe('RecommendationPanel Component', () => {
     expect(screen.getByText('Rule Violations / Alerts (2)')).toBeInTheDocument();
   });
 
-  test('calls setScenario when scenario buttons are clicked', () => {
-    const setScenarioMock = vi.fn();
-    render(
-      <RecommendationPanel 
-        recommendation={mockRecommendation}
-        scenario="Standard"
-        setScenario={setScenarioMock}
-        currentMode="Standard"
-        setCurrentMode={vi.fn()}
-        isSimulating={true}
-      />
-    );
-
-    const optimizedBtn = screen.getByRole('button', { name: /Simultaneous/i });
-    fireEvent.click(optimizedBtn);
-    expect(setScenarioMock).toHaveBeenCalledWith('Optimized');
-  });
-
-  test('calls setCurrentMode when Actual Machine State dropdown value changes', () => {
-    const setCurrentModeMock = vi.fn();
-    render(
-      <RecommendationPanel 
-        recommendation={mockRecommendation}
-        scenario="Standard"
-        setScenario={vi.fn()}
-        currentMode="Standard"
-        setCurrentMode={setCurrentModeMock}
-        isSimulating={true}
-      />
-    );
-
-    const select = screen.getByRole('combobox');
-    fireEvent.change(select, { target: { value: 'Optimized' } });
-    expect(setCurrentModeMock).toHaveBeenCalledWith('Optimized');
-  });
 
   test('handles Acknowledge button dispatch click', () => {
     render(

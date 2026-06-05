@@ -40,41 +40,6 @@ export default function RecommendationPanel({
     <div className="recommendation-panel glass-panel">
       <h2>Recommendation Engine</h2>
       
-      {/* Simulation Controls embedded inside panel */}
-      <div className="simulation-controls glass-panel-nested">
-        <h4>Simulation Settings</h4>
-        
-        <div className="control-group">
-          <label>Machinery Scenario:</label>
-          <div className="toggle-buttons">
-            <button 
-              className={`toggle-btn std ${scenario === 'Standard' ? 'active' : ''}`}
-              onClick={() => setScenario('Standard')}
-            >
-              Standard (Standard Rail)
-            </button>
-            <button 
-              className={`toggle-btn opt ${scenario === 'Optimized' ? 'active' : ''}`}
-              onClick={() => setScenario('Optimized')}
-            >
-              Simultaneous (Optimized)
-            </button>
-          </div>
-        </div>
-
-        <div className="control-group">
-          <label>Actual Machine State:</label>
-          <select 
-            value={currentMode} 
-            onChange={(e) => setCurrentMode(e.target.value)}
-            className="mode-select"
-          >
-            <option value="Standard">Standard Pattern</option>
-            <option value="Optimized">Optimized Pattern</option>
-          </select>
-        </div>
-      </div>
-
       {recommendation ? (
         <div className="rec-details-container fade-in">
           {/* Circular Score representation */}

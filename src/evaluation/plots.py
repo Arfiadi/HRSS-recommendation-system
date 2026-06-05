@@ -106,7 +106,7 @@ def plot_learning_curve(
         cv=cv,
         train_sizes=train_sizes,
         scoring=scoring,
-        n_jobs=-1,
+        n_jobs=1,
         random_state=42,
     )
     

@@ -50,7 +50,7 @@ const LiveMonitoring = () => {
 
       {/* Dashboard Panels Grid */}
       <div className="dashboard-grid">
-        <section className="left-panel">
+        <section className="left-panel" style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
           <TelemetryChart 
             data={chartData} 
             isSimulating={isSimulating}
@@ -58,6 +58,42 @@ const LiveMonitoring = () => {
             status={status}
             loading={loading}
           />
+          
+          <div className="glass-panel" style={{ padding: '1.5rem 1.75rem' }}>
+            <h2 style={{ fontSize: '1.1rem', fontWeight: 600, borderBottom: '1px solid rgba(255, 255, 255, 0.06)', paddingBottom: '0.75rem', marginBottom: '1rem' }}>Simulation & Machine State</h2>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem' }}>
+              <div className="control-group" style={{ marginBottom: 0 }}>
+                <label>Machinery Scenario:</label>
+                <div className="toggle-buttons">
+                  <button 
+                    className={`toggle-btn std ${scenario === 'Standard' ? 'active' : ''}`}
+                    onClick={() => setScenario('Standard')}
+                  >
+                    Standard Rail
+                  </button>
+                  <button 
+                    className={`toggle-btn opt ${scenario === 'Optimized' ? 'active' : ''}`}
+                    onClick={() => setScenario('Optimized')}
+                  >
+                    Simultaneous
+                  </button>
+                </div>
+              </div>
+
+              <div className="control-group" style={{ marginBottom: 0 }}>
+                <label>Actual Machine State:</label>
+                <select 
+                  value={currentMode} 
+                  onChange={(e) => setCurrentMode(e.target.value)}
+                  className="mode-select"
+                  style={{ padding: '0.6rem' }}
+                >
+                  <option value="Standard">Standard Pattern</option>
+                  <option value="Optimized">Optimized Pattern</option>
+                </select>
+              </div>
+            </div>
+          </div>
         </section>
 
         <section className="right-panel">

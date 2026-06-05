@@ -167,6 +167,7 @@
   grid-template-columns: 1.6fr 1fr;
   gap: 1.5rem;
   flex: 1;
+  align-items: start;
 }
 
 .left-panel, .right-panel {

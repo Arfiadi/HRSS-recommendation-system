@@ -9,7 +9,7 @@ import pandas as pd
 import logging
 from sklearn.model_selection import train_test_split
 
-from src.core.problem_definition import TARGET_COLUMN
+from src.core.problem_definition import TARGET_COLUMN, MODEL_FEATURE_COLUMNS
 
 logger = logging.getLogger(__name__)
 
@@ -26,7 +26,7 @@ def create_and_save_splits(
     """
     os.makedirs(splits_dir, exist_ok=True)
 
-    X = df.drop(columns=[TARGET_COLUMN])
+    X = df[MODEL_FEATURE_COLUMNS]
     y = df[[TARGET_COLUMN]]
 
     X_train, X_test, y_train, y_test = train_test_split(

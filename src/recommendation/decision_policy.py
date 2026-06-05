@@ -29,33 +29,33 @@ def generate_decision(
     # Identifikasi selisih kondisi (Switch Logic)
     switch_recommended = current_mode.strip().lower() != predicted_mode.strip().lower()
 
-    # Pemetaan Tingkat Risiko (Risk Level Mapping)
+    # Pemetaan Tingkat Inefisiensi
     if not switch_recommended and len(rule_alerts) == 0:
-        risk_level = "Low Risk (Normal Operation)"
+        risk_level = "Optimal Efficiency"
         primary_recommendation = (
-            f"Kondisi beban ideal. Pertahankan mesin pada mode {current_mode}."
+            f"Kondisi pergerakan ideal. Pertahankan mesin pada mode {current_mode} untuk efisiensi energi maksimal."
         )
 
     elif switch_recommended and len(rule_alerts) == 0:
-        risk_level = "Medium Inefficiency"
+        risk_level = "Sub-optimal Movement"
         primary_recommendation = (
-            f"Pola kelistrikan cocok untuk mode {predicted_mode}. "
-            f"Disarankan melakukan transisi mode untuk meningkatkan efisiensi operasional."
+            f"Pola pergerakan terdeteksi kurang efisien. "
+            f"Sistem merekomendasikan transisi ke mode {predicted_mode} untuk optimasi lintasan dan penghematan daya."
         )
 
     else:
-        # Jika ada peringatan mekanis/kelistrikan dari Rule Engine
-        risk_level = "High Inefficiency / Mechanical Anomaly"
+        # Jika ada inefisiensi ekstrem dari Rule Engine (misal: daya tinggi tapi minim gerak)
+        risk_level = "Critical Inefficiency"
         if current_mode.strip().lower() == "optimized":
             primary_recommendation = (
-                "Terdeteksi anomali beban fisik. Sistem menyarankan beralih ke mode Standard "
-                "untuk melindungi motor servo dari panas/aus."
+                "Terdeteksi pemborosan energi tinggi akibat pergerakan tidak wajar. "
+                "Sistem menyarankan kembali ke pola pergerakan Standard sementara untuk stabilisasi konsumsi daya."
             )
         else:
             primary_recommendation = (
-                "Terdeteksi anomali beban fisik. Sistem menyarankan tetap berada di mode Standard "
-                "untuk melindungi motor servo dari panas/aus."
+                "Terdeteksi pemborosan energi tinggi akibat pergerakan tidak wajar. "
+                "Sistem menyarankan tetap di pola Standard dan meninjau ulang algoritma routing (WMS)."
             )
 
-    logger.info("Decision generated. Risk Level: %s", risk_level)
+    logger.info("Decision generated. Efficiency Status: %s", risk_level)
     return risk_level, primary_recommendation

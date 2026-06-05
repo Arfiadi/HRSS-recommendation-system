@@ -45,7 +45,7 @@ ENGINEERED_FEATURES = [
 
 # Full feature set used by the model (raw sensors + engineered)
 MODEL_FEATURE_COLUMNS = (
-    ["Timestamp"] + ALL_SENSOR_COLUMNS + ENGINEERED_FEATURES
+    ALL_SENSOR_COLUMNS + ENGINEERED_FEATURES
 )
 
 # =========================================================

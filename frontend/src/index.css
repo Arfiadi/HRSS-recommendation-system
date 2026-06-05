@@ -1,24 +1,53 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
 :root {
-  /* Dark Mode Palette */
-  --bg-dark: #0f172a; /* Slate 900 */
-  --bg-darker: #020617; /* Slate 950 */
-  --panel-bg: rgba(30, 41, 59, 0.7); /* Slate 800 with opacity */
+  /* Color Palette - Cybernetic Dark Mode */
+  --bg-main: #0B0F19;
+  --bg-surface: #131B2C;
+  --bg-surface-hover: #1A253A;
   
-  /* Text Colors */
-  --text-primary: #f8fafc; /* Slate 50 */
-  --text-secondary: #94a3b8; /* Slate 400 */
+  --text-primary: #E2E8F0;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
   
-  /* Neon Accents */
-  --neon-blue: #3b82f6;
-  --neon-green: #22c55e;
-  --neon-red: #ef4444;
-  --neon-orange: #f59e0b;
+  --color-primary: #00F0FF;     /* Neon Cyan */
+  --color-secondary: #8A2BE2;   /* Electric Purple */
+  --color-success: #00FF66;     /* Neon Green */
+  --color-warning: #FFD700;     /* Cyber Yellow */
+  --color-danger: #FF003C;      /* Neon Red */
   
   /* Glassmorphism */
-  --glass-border: 1px solid rgba(255, 255, 255, 0.1);
+  --glass-bg: rgba(19, 27, 44, 0.6);
+  --glass-border: rgba(255, 255, 255, 0.08);
+  --glass-border-focus: rgba(0, 240, 255, 0.3);
   --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
-  --glass-blur: blur(12px);
-  --border-radius: 16px;
+  
+  /* Spacing */
+  --sidebar-width: 260px;
+  --header-height: 70px;
+  --gap-sm: 0.5rem;
+  --gap-md: 1rem;
+  --gap-lg: 1.5rem;
+  --gap-xl: 2rem;
+  
+  /* Typography */
+  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-xs: 0.75rem;   /* 12px */
+  --font-sm: 0.875rem;  /* 14px */
+  --font-base: 1rem;    /* 16px */
+  --font-lg: 1.125rem;  /* 18px */
+  --font-xl: 1.5rem;    /* 24px */
+  --font-2xl: 2rem;     /* 32px */
+  
+  /* Borders & Radius */
+  --radius-sm: 6px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --radius-full: 9999px;
+  
+  /* Transitions */
+  --transition-fast: 0.15s ease;
+  --transition-normal: 0.3s ease;
 }
 
 * {
@@ -28,42 +57,68 @@
 }
 
 body {
-  margin: 0;
-  font-family: 'Inter', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--bg-darker);
-  background-image: 
-    radial-gradient(circle at 15% 50%, rgba(59, 130, 246, 0.15), transparent 25%),
-    radial-gradient(circle at 85% 30%, rgba(34, 197, 94, 0.15), transparent 25%);
+  font-family: var(--font-family);
+  background-color: var(--bg-main);
   color: var(--text-primary);
-  min-height: 100vh;
+  font-size: var(--font-sm);
+  line-height: 1.5;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  overflow-x: hidden;
 }
 
+/* Typography Base */
+h1 { font-size: var(--font-xl); font-weight: 600; letter-spacing: -0.025em; }
+h2 { font-size: var(--font-lg); font-weight: 600; }
+h3 { font-size: var(--font-base); font-weight: 500; }
+p { color: var(--text-secondary); }
+
+/* Global Utilities */
 .glass-panel {
-  background: var(--panel-bg);
-  backdrop-filter: var(--glass-blur);
-  -webkit-backdrop-filter: var(--glass-blur);
-  border: var(--glass-border);
+  background: var(--glass-bg);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
   box-shadow: var(--glass-shadow);
-  border-radius: var(--border-radius);
-  padding: 1.5rem;
 }
 
-h1, h2, h3, h4 {
-  font-weight: 600;
-  letter-spacing: -0.025em;
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-button {
-  cursor: pointer;
-  border: none;
-  border-radius: 8px;
-  padding: 0.75rem 1.5rem;
-  font-weight: 600;
-  font-size: 1rem;
-  transition: all 0.2s ease-in-out;
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 }
 
-button:hover {
-  transform: translateY(-2px);
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: var(--bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: var(--bg-surface-hover);
+  border-radius: var(--radius-full);
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-muted);
+}
+
+/* Animations */
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 5px var(--color-danger); }
+  50% { box-shadow: 0 0 20px var(--color-danger); }
+  100% { box-shadow: 0 0 5px var(--color-danger); }
+}
+
+.danger-glow {
+  animation: pulseGlow 2s infinite;
+  border-color: rgba(255, 0, 60, 0.5);
 }

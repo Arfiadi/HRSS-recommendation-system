@@ -1,25 +1,56 @@
 """
 API Main — Entry point FastAPI application.
-
-File ini akan berisi:
-- Inisialisasi FastAPI app
-- Registrasi routers (prediction, recommendation, health)
-- CORS middleware configuration
-- Startup/shutdown event handlers (load model saat startup)
-
-Contoh struktur:
-    from fastapi import FastAPI
-    from src.api.routes import prediction, recommendation, health
-
-    app = FastAPI(
-        title="HRSS Recommendation System API",
-        description="Industrial Operational Recommendation API",
-        version="0.1.0"
-    )
-
-    app.include_router(health.router)
-    app.include_router(prediction.router, prefix="/api/v1")
-    app.include_router(recommendation.router, prefix="/api/v1")
-
-TODO: Implement FastAPI application setup.
 """
+import logging
+from fastapi import FastAPI
+from contextlib import asynccontextmanager
+
+from src.api.routes.health import router as health_router
+from src.api.routes.prediction import router as prediction_router
+from src.api.routes.recommendation import router as recommendation_router
+from src.services.inference_service import InferenceService
+
+# Setup logging
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s | %(name)s | %(levelname)s | %(message)s",
+)
+logger = logging.getLogger(__name__)
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    # Startup: load model
+    logger.info("FastAPI starting up...")
+    try:
+        # Mengharuskan pemuatan model lokal (Offline Baking)
+        logger.info("Lifespan: Initializing InferenceService with local champion model...")
+        app.state.inference_service = InferenceService(
+            model_path="models/final_hrss_rf_model.pkl"
+        )
+        logger.info("Lifespan: InferenceService successfully loaded local model.")
+    except Exception as e:
+        logger.critical(
+            "Lifespan: CRITICAL - Failed to load local champion model! Details: %s. "
+            "Offline serving cannot start.",
+            str(e)
+        )
+        app.state.inference_service = None
+        raise e
+
+    yield
+    # Shutdown logic
+    logger.info("FastAPI shutting down...")
+
+
+app = FastAPI(
+    title="HRSS Recommendation System API",
+    description="Industrial Operational Recommendation API for HRSS/Stacker Crane Energy Optimization.",
+    version="1.0.0",
+    lifespan=lifespan,
+)
+
+# Registrasi routers
+app.include_router(health_router)
+app.include_router(prediction_router, prefix="/api/v1")
+app.include_router(recommendation_router, prefix="/api/v1")

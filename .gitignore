@@ -66,6 +66,7 @@ venv.bak/
 # MLFlow
 mlruns/
 experiments/mlruns/
+mlflow.db
 
 # Data
 # Ignore everything in data/ except .keep files

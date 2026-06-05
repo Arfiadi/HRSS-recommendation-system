@@ -1,26 +1,40 @@
 """
 Feature Engineering — Membuat fitur turunan dari data telemetry HRSS.
 
-File ini akan berisi:
-- Perhitungan total_power (agregasi kolom power)
-- Perhitungan avg_voltage (rata-rata kolom voltage)
-- Perhitungan total_movement (agregasi kolom movement/Weg)
-- Perhitungan rail_activity dan conveyor_activity
-- Perhitungan energy_efficiency_ratio
-- Fungsi utama build_features() yang menjalankan semua di atas
-
-Contoh fungsi:
-    def build_features(df: pd.DataFrame) -> pd.DataFrame:
-        \'\'\'
-        Membuat fitur-fitur turunan:
-        - total_power, avg_voltage
-        - total_movement, rail_activity, conveyor_activity
-        - energy_efficiency_ratio
-        \'\'\'
-        df["total_power"] = df[POWER_COLUMNS].sum(axis=1)
-        df["rail_activity"] = df[["I_w_HR_Weg", "I_w_HL_Weg"]].sum(axis=1)
-        ...
-        return df
-
-TODO: Implement feature engineering functions.
+Semua kalkulasi fitur didefinisikan di sini sebagai satu-satunya
+sumber kebenaran, digunakan baik saat training maupun inference.
 """
+import pandas as pd
+import logging
+
+from src.core.problem_definition import (
+    POWER_COLUMNS, VOLTAGE_COLUMNS, MOVEMENT_COLUMNS,
+    RAIL_COLUMNS, CONVEYOR_COLUMNS,
+)
+
+logger = logging.getLogger(__name__)
+
+EPSILON = 1e-9  # Pencegah division by zero
+
+
+def build_features(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Membuat fitur-fitur turunan dari kolom sensor mentah:
+    - total_power:              Jumlah konsumsi daya seluruh sumbu
+    - avg_voltage:              Rata-rata tegangan seluruh sumbu
+    - total_movement:           Jumlah pergerakan seluruh sumbu
+    - power_efficiency_ratio:   Rasio pergerakan terhadap daya (efisiensi)
+    - rail_activity:            Aktivitas pergerakan rel horizontal
+    - conveyor_activity:        Aktivitas pergerakan konveyor
+    """
+    df = df.copy()
+
+    df["total_power"] = df[POWER_COLUMNS].sum(axis=1)
+    df["avg_voltage"] = df[VOLTAGE_COLUMNS].mean(axis=1)
+    df["total_movement"] = df[MOVEMENT_COLUMNS].sum(axis=1)
+    df["power_efficiency_ratio"] = df["total_movement"] / (df["total_power"] + EPSILON)
+    df["rail_activity"] = df[RAIL_COLUMNS].sum(axis=1)
+    df["conveyor_activity"] = df[CONVEYOR_COLUMNS].sum(axis=1)
+
+    logger.info("Feature engineering complete. New columns added. Shape: %s", df.shape)
+    return df

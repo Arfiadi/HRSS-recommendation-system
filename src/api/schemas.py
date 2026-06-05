@@ -1,10 +1,5 @@
 """
-API Schemas — Definisi request/response schema (alternative flat structure).
-
-File ini adalah alternatif jika tidak ingin menggunakan folder schemas/.
-Berisi semua Pydantic model dalam satu file.
-
-Catatan: Gunakan file ini ATAU folder schemas/, bukan keduanya.
-
-TODO: Decide whether to use this file or schemas/ folder.
+API Schemas — Re-export all schemas from schemas/ folder.
 """
+from src.api.schemas.request import TelemetryInput, RecommendationRequest
+from src.api.schemas.response import PredictionResponse, RecommendationResponse

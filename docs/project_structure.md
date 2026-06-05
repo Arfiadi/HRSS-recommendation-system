@@ -93,11 +93,6 @@ HRSS_recommendation_system/
 │   │   ├── evaluator.py
 │   │   ├── validation.py
 │   │
-│   ├── feature_store/
-│   │   ├── __init__.py
-│   │   ├── store.py
-│   │   ├── registry.py
-│   │
 │   ├── features/
 │   │   ├── __init__.py
 │   │   ├── feature_builder.py
@@ -109,9 +104,6 @@ HRSS_recommendation_system/
 │   │   │   ├── __init__.py
 │   │   │   ├── model_loader.py
 │   │   │   ├── predictor.py
-│   │   ├── registry/
-│   │   │   ├── __init__.py
-│   │   │   ├── model_registry.py
 │   │   ├── training/
 │   │   │   ├── __init__.py
 │   │   │   ├── pycaret_runner.py
@@ -135,20 +127,9 @@ HRSS_recommendation_system/
 │   │   ├── prediction_service.py
 │   │   ├── recommendation_service.py
 │   │
-│   ├── streaming/
-│   │   ├── __init__.py
-│   │   ├── kafka_consumer.py
-│   │   ├── stream_processor.py
-│   │
 │   ├── tracking/
 │   │   ├── __init__.py
 │   │   ├── mlflow_config.py
-│   │
-│   ├── utils/
-│   │   ├── __init__.py
-│   │   ├── config_loader.py
-│   │   ├── io.py
-│   │   ├── logger.py
 │
 ├── tests/
 │   ├── conftest.py
@@ -298,16 +279,12 @@ Pipeline data processing end-to-end.
 ### evaluation/
 Sistem evaluasi model: F1, ROC-AUC, Recall dan Precision class 1 FNR, FPR.
 
-### feature_store/
-Manajemen fitur terpusat (Future Scale).
-
 ### features/
 Abstraksi feature engineering.
 
 ### models/
 * training → PyCaret + training pipeline
 * inference → model loading & prediction
-* registry → model versioning
 
 ### recommendation/
 Logika rekomendasi industri:
@@ -329,14 +306,8 @@ Reusable logic layer:
 * prediction service → wrapper inference logic (reusable oleh API, Streamlit, pipeline)
 * recommendation service → wrapper decision system
 
-### streaming/
-Streaming ingestion dan pemrosesan (Future Scale).
-
 ### tracking/
 MLflow utilities.
-
-### utils/
-Utilitas umum (IO, Logging, Configuration).
 
 👉 Ini adalah transisi dari ML project → ML system.
 

@@ -1,10 +1,14 @@
 """
 Health Check Endpoint — Mengecek status kesehatan sistem.
-
-Contoh endpoint:
-    @router.get("/health")
-    def health_check():
-        return {"status": "healthy", "model_loaded": True}
-
-TODO: Implement health check endpoint.
 """
+from fastapi import APIRouter
+
+router = APIRouter()
+
+
+@router.get("/health", tags=["Health"])
+def health_check():
+    return {
+        "status": "healthy",
+        "service": "HRSS Recommendation System API",
+    }

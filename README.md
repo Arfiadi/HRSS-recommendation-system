@@ -126,13 +126,14 @@ mlflow ui
 ```
 *Access the UI at `http://localhost:5000`*
 
-### Launching the Web Dashboard (Frontend)
-To run the modern React/Vite dashboard UI locally:
+### Running the Application (Backend & Frontend)
+To easily start both the FastAPI server and the modern React/Vite dashboard simultaneously, use the provided unified runner script:
 ```bash
-cd frontend
-npm run dev
+python run.py
 ```
-*Access the dashboard at `http://localhost:5173`*
+This script will automatically verify dependencies, activate environments, and start both services.
+* **Frontend Dashboard**: `http://localhost:5173`
+* **Backend API Docs**: `http://localhost:8000/docs`
 
 ### Exporting the Champion Model
 Export the best model from MLflow into the local system for the API to use:
@@ -140,12 +141,6 @@ Export the best model from MLflow into the local system for the API to use:
 python -m src.scripts.export_champion
 ```
 
-### Serving the API (FastAPI)
-Run the development API server (Offline Baking mode):
-```bash
-uvicorn src.api.main:app --reload
-```
-*Access interactive swagger API documentation at `http://localhost:8000/docs`*
 
 ---
 

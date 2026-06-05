@@ -7,7 +7,7 @@ name = "hrss-recommendation-system"
 version = "0.1.0"
 description = "Industrial Operational Recommendation System based on HRSS telemetry"
 authors = [
-    {name = "Arfi", email = "arfi@example.com"}
+    {name = "Arfi", email = "arfiadi13@gmail.com"}
 ]
 readme = "README.md"
 requires-python = ">=3.8"
@@ -17,8 +17,8 @@ dependencies = [
     "scikit-learn",
     "xgboost",
     "mlflow",
-    "streamlit",
-    "pycaret"
+    "pycaret",
+    "python-dotenv"
 ]
 
 [project.optional-dependencies]

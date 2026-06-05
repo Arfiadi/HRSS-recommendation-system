@@ -2,9 +2,13 @@
 API Main — Entry point FastAPI application.
 """
 import logging
+from dotenv import load_dotenv
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
+
+# Muat environment variables dari .env
+load_dotenv()
 
 from src.api.routes.health import router as health_router
 from src.api.routes.prediction import router as prediction_router

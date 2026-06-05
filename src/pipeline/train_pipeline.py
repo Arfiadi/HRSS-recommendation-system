@@ -11,6 +11,11 @@ Usage:
 import os
 import sys
 import logging
+from dotenv import load_dotenv
+
+# Muat environment variables dari .env
+load_dotenv()
+
 import mlflow
 
 from src.pipeline.pipeline_utils import load_pipeline_config, StepTimer

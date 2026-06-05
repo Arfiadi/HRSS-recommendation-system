@@ -2,8 +2,8 @@
 > **Industrial Operational Recommendation System based on High Rack Storage System (HRSS) Telemetry**
 
 [![Python Version](https://img.shields.io/badge/python-3.8%2B-blue.svg)](https://www.python.org/)
-[![Framework](https://img.shields.io/badge/framework-Streamlit%20%7C%20FastAPI-red.svg)]()
-[![ML Ops](https://img.shields.io/badge/MLops-MLflow%20%7C%20PyCaret-orange.svg)]()
+[![Framework](https://img.shields.io/badge/framework-FastAPI-red.svg)]()
+[![ML Ops](https://img.shields.io/badge/MLops-MLflow%20%7C%20Offline_Baking-orange.svg)]()
 
 ---
 
@@ -22,66 +22,51 @@ This project implements an **Industrial Operational Recommendation System** usin
 
 ## 🛠️ Tech Stack & Key Tools
 * **Data Processing & ML Pipeline**: `pandas`, `numpy`, `scikit-learn`, `xgboost`
-* **Automated Machine Learning**: `PyCaret` (for fast model selection and prototyping)
-* **MLOps & Experiment Tracking**: `MLflow` (for tracking runs, metrics, and models)
+* **MLOps & Experiment Tracking**: `MLflow` (for tracking runs, metrics, models, and plotting learning curves)
 * **API Endpoints**: `FastAPI` & `Uvicorn` (for deployment-ready model serving)
-* **User Interface**: `Streamlit` (for interactive dashboards and model comparison)
-* **DevOps**: `Docker` & `Docker Compose`
+* **DevOps**: `Docker` & `pytest`
 
 ---
 
 ## 📂 Project Directory Structure
-The codebase follows a modular, production-ready, and scalable layout conforming to professional MLOps practices:
+The codebase follows a modular, production-ready layout conforming to professional MLOps practices:
 
 ```
 HRSS_recommendation_system/
 ├── configs/                  # Global, model, and feature configuration files
 ├── data/                     # Raw, interim, processed, and fixed split datasets
 ├── docs/                     # Comprehensive architecture and design documents
-├── experiments/              # Jupyter notebooks & MLflow tracking runs (mlruns)
-│   └── notebooks/
-│       ├── 01_data_understanding.ipynb
-│       ├── 02_feature_engineering.ipynb
-│       ├── 03_model_experiments.ipynb
-│       ├── 04_model_evaluation_comparison.ipynb
-│       └── 05_recommendation_engine.ipynb
+├── experiments/              # Jupyter notebooks for data understanding & prototyping
+├── outputs/                  # Generated figures (confusion matrix, learning curves)
 ├── src/                      # Core production source code
 │   ├── api/                  # FastAPI app and endpoint routes
 │   ├── core/                 # Domain schema and problem definitions
 │   ├── data/                 # Ingestion, preprocessing, and splitting pipeline
 │   ├── features/             # Feature builders and validators
-│   ├── models/               # Model training, registry, and inference services
+│   ├── models/               # Model training, offline baking, and local loading
+│   ├── pipeline/             # Training and Inference orchestration pipelines
 │   ├── recommendation/       # Rule engines, scoring, and decision policy
-│   ├── services/             # Unified prediction and recommendation services
-│   └── utils/                # I/O utilities, logging, and configuration loader
-├── app/                      # Streamlit application code (dashboard pages & UI)
-├── tests/                    # Integration and unit tests
-├── deployment/               # Dockerfiles and Kubernetes manifests
-└── monitoring/               # Model drift and performance tracking scripts
+│   ├── scripts/              # CI/CD scripts (e.g., export_champion.py)
+│   └── services/             # Unified prediction and recommendation services
+└── tests/                    # Integration and unit tests
 ```
+
+> **Note**: For deep-dives into specific folders, please read the localized `README.md` inside `data/`, `src/api/`, and `experiments/`. For architecture choices, see the `docs/` folder.
 
 ---
 
-## 🏗️ System Architecture
+## 🏗️ System Architecture (Offline Baking)
 
 ```mermaid
 graph TD
-    A[Raw HRSS Telemetry Data] --> B[Data Preprocessing & Cleaning]
-    B --> C[Feature Engineering Layer]
-    C --> D[Controlled Train-Test Split]
-    D --> E[Model Experimentation PyCaret + MLflow]
-    E --> F[Best Model Selection & Registry]
-    F --> G[Unified Inference & Service Layer]
-    G --> H[Recommendation Engine Rule-based + Model Signal]
-    H --> I[Streamlit Dashboard / FastAPI Service]
+    A[Raw HRSS Telemetry] --> B[Training Pipeline]
+    B --> C[MLflow Server Tracking]
+    C -.->|export_champion.py| D[(Local .pkl Model)]
+    D --> E[FastAPI Inference Server]
+    E --> F[Client / Dashboard]
 ```
 
-### Core Architecture Layers:
-1. **Data Layer**: Clean separation of raw telemetry and processed/split data to prevent data leakage.
-2. **Feature Layer**: Creates domain-specific features (e.g., total power, conveyor/rail activity indices) representing operational behavior.
-3. **Model Layer**: Trains classifiers (`Logistic Regression`, `Decision Tree`, `Random Forest`, `XGBoost`) tracking metrics under MLflow.
-4. **Service Layer**: Decouples ML models from the interface, serving predictions and recommendations via standard JSON response formats.
-5. **Interface Layer**: Interactive user interface via Streamlit displaying system overview, simulation inputs, MLflow model comparison, and SHAP explainability.
+This project uses the **Offline Baking** architecture. The training pipeline logs everything to MLflow, but the production API Server (FastAPI) does *not* talk to MLflow. Instead, the champion model is exported locally as a `.pkl` file to ensure the API server stays robust, fast, and completely isolated from MLflow downtime.
 
 ---
 
@@ -106,9 +91,9 @@ source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
-You can install the dependencies package-style using `pyproject.toml` or directly from `requirements.txt`:
+We use `pyproject.toml` for modern dependency management:
 ```bash
-# Development installation
+# Install core dependencies along with API and Dev tools
 pip install -e .[dev,api]
 ```
 
@@ -116,35 +101,33 @@ pip install -e .[dev,api]
 Make sure to place your raw telemetry datasets under the raw directory:
 * `data/raw/HRSS_normal_standard.csv`
 * `data/raw/HRSS_normal_optimized.csv`
-* `data/raw/HRSS_anomalous_standard.csv`
-* `data/raw/HRSS_anomalous_optimized.csv`
 
 ---
 
 ## 💻 Usage & Execution
 
-### Running Jupyter Experiments
-Launch your notebooks to run exploratory analysis, feature engineering, and model validation:
+### Running the End-to-End Training Pipeline
+To run data ingestion, preprocessing, feature engineering, model training, and MLflow logging:
 ```bash
-jupyter notebook experiments/notebooks/
+python -m src.pipeline.train_pipeline
 ```
+*(This will also generate Learning Curve and Confusion Matrix plots in `outputs/figures/`)*
 
 ### Tracking Experiments with MLflow
-Start the local MLflow dashboard to track runs, compare metrics, and select the best model:
+Start the local MLflow dashboard to track runs and compare metrics:
 ```bash
-mlflow ui --backend-store-uri ./experiments/mlruns
+mlflow ui
 ```
 *Access the UI at `http://localhost:5000`*
 
-### Launching the Streamlit Web Application
-To run the dashboard UI locally:
+### Exporting the Champion Model
+Export the best model from MLflow into the local system for the API to use:
 ```bash
-streamlit run app/app.py
+python -m src.scripts.export_champion
 ```
-*Access the dashboard at `http://localhost:8501`*
 
 ### Serving the API (FastAPI)
-Run the development API server:
+Run the development API server (Offline Baking mode):
 ```bash
 uvicorn src.api.main:app --reload
 ```
@@ -152,15 +135,15 @@ uvicorn src.api.main:app --reload
 
 ---
 
-## 📊 Evaluation Framework
-Models are evaluated not only on simple accuracy but also on business impact and operational risk:
-* **Primary Metrics**: Macro F1-Score & ROC-AUC (ensures robust classification performance).
-* **Risk Metrics**: False Negative Rate (FNR) & False Positive Rate (FPR) (minimizes incorrect recommendations that could cause energy wastage or operational hazards).
-* **Secondary Metrics**: Precision & Recall for Class 1 (optimized operation).
+## 🧪 Testing
+To run the automated test suite (Unit and Integration tests):
+```bash
+python -m pytest
+```
 
 ---
 
 ## 📝 Authors & License
-* **Developer**: Arfi ([arfiadi13@gmail.com](mailto:[EMAIL_ADDRESS]))
+* **Developer**: Arfi
 * **Dataset Source**: Smart Factory Lemgo, Germany
 * **License**: -

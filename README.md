@@ -91,10 +91,16 @@ source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
-We use `pyproject.toml` for modern dependency management:
+We use `pyproject.toml` for modern dependency management. Kami telah memisahkan *library* berdasarkan fungsionalitas untuk menghemat ukuran memori *deployment*:
 ```bash
-# Install core dependencies along with API and Dev tools
-pip install -e .[dev,api]
+# Untuk Server Produksi API saja (Sangat Ringan)
+pip install -e .[api]
+
+# Untuk Pengembangan / Development (Termasuk Testing)
+pip install -e .[api,dev]
+
+# Untuk Data Scientist (Training & Visualisasi)
+pip install -e .[api,train,notebooks]
 ```
 
 ### 4. Data Placement

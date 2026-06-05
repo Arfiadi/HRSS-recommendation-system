@@ -16,8 +16,6 @@ dependencies = [
     "numpy",
     "scikit-learn",
     "xgboost",
-    "mlflow",
-    "pycaret",
     "python-dotenv"
 ]
 
@@ -31,6 +29,16 @@ dev = [
 api = [
     "fastapi",
     "uvicorn"
+]
+train = [
+    "mlflow",
+    "matplotlib",
+    "seaborn"
+]
+notebooks = [
+    "pycaret",
+    "jupyter",
+    "ipywidgets"
 ]
 
 [tool.setuptools.packages.find]

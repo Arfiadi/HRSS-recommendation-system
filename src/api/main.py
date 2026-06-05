@@ -3,6 +3,7 @@ API Main — Entry point FastAPI application.
 """
 import logging
 from fastapi import FastAPI
+from fastapi.middleware.cors import CORSMiddleware
 from contextlib import asynccontextmanager
 
 from src.api.routes.health import router as health_router
@@ -48,6 +49,15 @@ app = FastAPI(
     description="Industrial Operational Recommendation API for HRSS/Stacker Crane Energy Optimization.",
     version="1.0.0",
     lifespan=lifespan,
+)
+
+# Konfigurasi CORS agar bisa diakses oleh Frontend (Vite/React)
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Untuk development, izinkan semua port frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 # Registrasi routers

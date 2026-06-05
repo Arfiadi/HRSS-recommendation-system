@@ -120,6 +120,14 @@ mlflow ui
 ```
 *Access the UI at `http://localhost:5000`*
 
+### Launching the Web Dashboard (Frontend)
+To run the modern React/Vite dashboard UI locally:
+```bash
+cd frontend
+npm run dev
+```
+*Access the dashboard at `http://localhost:5173`*
+
 ### Exporting the Champion Model
 Export the best model from MLflow into the local system for the API to use:
 ```bash

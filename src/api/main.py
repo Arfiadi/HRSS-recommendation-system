@@ -56,14 +56,22 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
+import os
+
 # Konfigurasi CORS agar bisa diakses oleh Frontend (Vite/React)
+origins = os.getenv("ALLOWED_ORIGINS", "*").split(",")
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Untuk development, izinkan semua port frontend
+    allow_origins=origins,
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/")
+async def root():
+    return {"message": "HRSS Recommendation System API is running", "status": "online"}
 
 # Registrasi routers
 app.include_router(health_router)

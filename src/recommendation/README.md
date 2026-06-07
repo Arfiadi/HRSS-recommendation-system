@@ -13,7 +13,7 @@ Model Random Forest (atau algoritma lain) menelan raw data telemetri dan mempred
 Diimplementasikan pada `rule_engine.py`, komponen ini mengevaluasi telemetri kelistrikan dan mekanis alat HRSS berdasarkan konstrain operasional:
 * **Rail Inefficiency**: Mendeteksi aktivitas pergerakan horizontal yang tinggi namun dengan rasio efisiensi daya yang sangat rendah, menyarankan optimasi *routing* pada WMS.
 * **Inefficient High Power**: Mendeteksi tarikan daya listrik yang tinggi dengan pergerakan mekanis yang sangat minim, mengindikasikan pemborosan daya akibat pergerakan *idle*.
-* **Electrical Power Instability**: Mendeteksi penurunan tegangan rata-rata operasional yang menandakan bahwa pergerakan serentak (*simultaneous*) menjadi kurang efisien secara kelistrikan.
+* **Electrical Power Instability**: Mendeteksi penurunan tegangan rata-rata operasional yang menandakan bahwa pola pergerakan akselerasi tinggi atau rute dinamis (*optimized*) menjadi kurang efisien secara kelistrikan pada kondisi drop tegangan.
 
 ### 3. Decision Policy (Prescriptive Arbiter)
 Diimplementasikan pada `decision_policy.py`, komponen ini bertindak sebagai pengambil keputusan final (rekomendasi preskriptif).

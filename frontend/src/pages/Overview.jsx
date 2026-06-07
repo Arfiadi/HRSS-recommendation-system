@@ -17,7 +17,7 @@ const Overview = () => {
   
   const statusText = isNonOptimized ? 'Sub-optimal' : 'Optimal';
   const statusColor = isNonOptimized ? 'var(--color-warning)' : 'var(--color-success)';
-  const statusDesc = isNonOptimized ? 'Inefficient movement pattern detected' : 'Simultaneous movement active';
+  const statusDesc = isNonOptimized ? 'Inefficient routing pattern detected' : 'Smart routing active';
   
   const inefficientCount = hasData && isNonOptimized ? 1 : 0;
 
@@ -46,10 +46,10 @@ const Overview = () => {
       setEventLog(prev => {
         const lastEvent = prev[0];
         // Only log if the state changed
-        if (isNowNonOptimized && (!lastEvent || !lastEvent.message.includes('Standard Operation'))) {
-          return [{ id: Date.now(), time: timestamp, type: 'warning', message: 'Standard Operation detected. Recommendation: Apply simultaneous movement.' }, ...prev].slice(0, 5);
-        } else if (!isNowNonOptimized && (!lastEvent || !lastEvent.message.includes('Simultaneous'))) {
-          return [{ id: Date.now(), time: timestamp, type: 'success', message: 'Simultaneous Movement (Optimized) confirmed. Energy consumption lowering.' }, ...prev].slice(0, 5);
+        if (isNowNonOptimized && (!lastEvent || !lastEvent.message.includes('Standard Routing'))) {
+          return [{ id: Date.now(), time: timestamp, type: 'warning', message: 'Standard Routing detected. Recommendation: Apply smart path routing.' }, ...prev].slice(0, 5);
+        } else if (!isNowNonOptimized && (!lastEvent || !lastEvent.message.includes('Smart Routing'))) {
+          return [{ id: Date.now(), time: timestamp, type: 'success', message: 'Smart Routing (Optimized) confirmed. Energy consumption lowering.' }, ...prev].slice(0, 5);
         }
         return prev;
       });
@@ -58,7 +58,7 @@ const Overview = () => {
 
   // Nodes for the Status Grid
   const nodes = [
-    { name: 'Middle Conveyor Belt', status: 'Active', type: 'hardware' },
+    { name: 'Conveyor System', status: 'Active', type: 'hardware' },
     { name: 'Rail System', status: 'Active', type: 'hardware' },
     { name: 'Movement Controller', status: isNonOptimized ? 'Standard Mode' : 'Optimized Mode', type: 'hardware' },
     { name: 'Optimization Engine', status: 'Online', type: 'software' },
@@ -106,7 +106,7 @@ const Overview = () => {
             <AlertTriangle color="var(--color-warning)" size={20} />
           </div>
           <h2>{inefficientCount}</h2>
-          <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)' }}>Non-simultaneous movements</span>
+          <span style={{ fontSize: 'var(--font-xs)', color: 'var(--text-muted)' }}>Sub-optimal routing patterns</span>
         </div>
       </div>
 
@@ -141,8 +141,8 @@ const Overview = () => {
                   contentStyle={{ backgroundColor: 'rgba(11, 15, 25, 0.95)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '8px' }} 
                 />
                 <Legend iconType="circle" wrapperStyle={{ fontSize: '12px' }} />
-                <Bar dataKey="Standard" fill="#64748B" radius={[4, 4, 0, 0]} name="Standard Operation (Non-Simultaneous)" />
-                <Bar dataKey="Optimized" fill="var(--color-primary)" radius={[4, 4, 0, 0]} name="Optimized Operation (Simultaneous)" />
+                <Bar dataKey="Standard" fill="#64748B" radius={[4, 4, 0, 0]} name="Standard Operation (Traditional)" />
+                <Bar dataKey="Optimized" fill="var(--color-primary)" radius={[4, 4, 0, 0]} name="Optimized Operation (Smart Routing)" />
               </BarChart>
             </ResponsiveContainer>
           </div>

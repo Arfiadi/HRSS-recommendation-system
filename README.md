@@ -10,10 +10,10 @@
 ## 📌 Project Overview
 Modern industrial automation systems (conveyors, rails, automated storage) run continuously to move materials, which consumes a high amount of operational energy. Inefficient movement patterns lead to higher power usage, idle movements, and slower operational cycles. 
 
-This project implements an **Industrial Operational Recommendation System** using telemetry sensor data from the **High Rack Storage System (HRSS)** at the Smart Factory Lemgo, Germany. The system processes time-series telemetry data, runs automated machine learning experiments to classify the operations, and provides actionable recommendations to optimize operational strategy (e.g., using simultaneous movement patterns) to reduce energy consumption.
+This project implements an **Industrial Operational Recommendation System** using telemetry sensor data from the **High Rack Storage System (HRSS)** at the Smart Factory Lemgo, Germany. The system processes time-series telemetry data, runs automated machine learning experiments to classify the operations, and provides actionable recommendations to optimize operational strategy (e.g., using smart path routing / warehouse path optimization) to reduce energy consumption.
 
 ### Key Objectives
-* **Analyze Operational Behavior**: Compare standard (non-optimized) and optimized simultaneous movement scenarios.
+* **Analyze Operational Behavior**: Compare standard (traditional routing) and optimized (smart routing) scenarios.
 * **Operational Pattern Recognition**: Build binary classification models (`operation_type`: `0` for standard, `1` for optimized) based on sensor telemetry.
 * **Energy Consumption Analytics**: Understand the correlation between movement patterns and electrical power consumption.
 * **Decision Support & Recommendations**: Provide real-time actionable recommendations to shift operational states toward optimal configurations.

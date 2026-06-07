@@ -24,8 +24,8 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     - avg_voltage:              Rata-rata tegangan seluruh sumbu
     - total_movement:           Jumlah pergerakan seluruh sumbu
     - power_efficiency_ratio:   Rasio pergerakan terhadap daya (efisiensi)
-    - rail_activity:            Aktivitas pergerakan rel horizontal
-    - conveyor_activity:        Aktivitas pergerakan konveyor
+    - rail_activity:            Aktivitas pergerakan rel (sumbu HL dan HR)
+    - conveyor_activity:        Aktivitas pergerakan konveyor (sumbu BLO, BHL, BHR, BRU)
     """
     df = df.copy()
 

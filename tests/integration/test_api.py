@@ -32,6 +32,7 @@ def test_api_endpoints():
             sample.pop(col, None)
 
         # 2. Test Predict Route
+        sample["Timestamp"] = 0.0
         pred_response = client.post("/api/v1/predict", json=sample)
         assert pred_response.status_code == 200
         pred_json = pred_response.json()

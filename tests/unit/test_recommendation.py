@@ -40,7 +40,7 @@ def test_rule_engine_anomalies():
     alerts_rail = engine.evaluate_rules(df_rail)
     assert any("Rail Inefficiency" in alert for alert in alerts_rail)
 
-    # Test Rule 2: Overload/Friction
+    # Test Rule 2: Inefficient High Power (Movement Inefficiency)
     df_friction = pd.DataFrame(
         [
             {
@@ -50,9 +50,9 @@ def test_rule_engine_anomalies():
         ]
     )
     alerts_friction = engine.evaluate_rules(df_friction)
-    assert any("Overload/Friction" in alert for alert in alerts_friction)
+    assert any("Movement Inefficiency" in alert for alert in alerts_friction)
 
-    # Test Rule 3: Voltage Sag
+    # Test Rule 3: Power Instability (Voltage Sag)
     df_voltage = pd.DataFrame(
         [
             {
@@ -61,23 +61,23 @@ def test_rule_engine_anomalies():
         ]
     )
     alerts_voltage = engine.evaluate_rules(df_voltage)
-    assert any("Voltage Sag" in alert for alert in alerts_voltage)
+    assert any("Power Instability" in alert for alert in alerts_voltage)
 
 
 def test_decision_policy():
     # Skenario 1: Normal
     risk, action = generate_decision("Standard", "Standard", 0.1, [])
-    assert risk == "Low Risk (Normal Operation)"
+    assert risk == "Optimal Efficiency"
 
     # Skenario 2: Medium Inefficiency (ML beda, no alerts)
     risk, action = generate_decision("Standard", "Optimized", 0.9, [])
-    assert risk == "Medium Inefficiency"
+    assert risk == "Sub-optimal Movement"
 
     # Skenario 3: High Inefficiency (Alerts terpicu)
     risk, action = generate_decision(
-        "Optimized", "Standard", 0.1, ["Voltage Sag Anomaly"]
+        "Optimized", "Standard", 0.1, ["Power Instability alert"]
     )
-    assert risk == "High Inefficiency / Mechanical Anomaly"
+    assert risk == "Critical Inefficiency"
 
 
 def test_scoring():
@@ -92,6 +92,6 @@ def test_scoring():
 
     # Case 3: Batas bawah 0%
     score = calculate_efficiency_score(
-        df, 0.2, ["Rail Inefficiency alert", "Overload/Friction alert"]
+        df, 0.2, ["Rail Inefficiency alert", "Movement Inefficiency alert"]
     )
     assert score == 0.0

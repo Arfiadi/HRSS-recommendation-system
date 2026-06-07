@@ -29,8 +29,8 @@ VOLTAGE_COLUMNS = [
     "O_w_BRU_voltage", "O_w_HR_voltage", "O_w_HL_voltage",
 ]
 
-RAIL_COLUMNS = ["I_w_HR_Weg", "I_w_HL_Weg"]
-CONVEYOR_COLUMNS = ["I_w_BLO_Weg", "I_w_BHL_Weg", "I_w_BHR_Weg"]
+RAIL_COLUMNS = ["I_w_HL_Weg", "I_w_HR_Weg"]
+CONVEYOR_COLUMNS = ["I_w_BLO_Weg", "I_w_BHL_Weg", "I_w_BHR_Weg", "I_w_BRU_Weg"]
 
 # All raw sensor columns (excluding Timestamp and Labels)
 ALL_SENSOR_COLUMNS = MOVEMENT_COLUMNS + POWER_COLUMNS + VOLTAGE_COLUMNS

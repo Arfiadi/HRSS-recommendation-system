@@ -33,7 +33,7 @@ class HRSSRuleEngine:
         """
         alerts = []
 
-        # Rule 1: Rail Inefficiency (Banyak gerak rel horizontal, efisiensi minim)
+        # Rule 1: Rail Inefficiency (Banyak gerak rel, efisiensi minim)
         if "rail_activity" in df.columns and "power_efficiency_ratio" in df.columns:
             rail_act = df["rail_activity"].values[0]
             pwr_eff = df["power_efficiency_ratio"].values[0]
@@ -42,7 +42,7 @@ class HRSSRuleEngine:
                 and pwr_eff < self.rules_config["power_efficiency_low"]
             ):
                 alerts.append(
-                    "Rail Inefficiency: Aktivitas sumbu horizontal tinggi namun rasio efisiensi daya sangat rendah. "
+                    "Rail Inefficiency: Aktivitas sumbu rel tinggi namun rasio efisiensi daya sangat rendah. "
                     "Pertimbangkan optimasi algoritma routing (shortest path) pada WMS."
                 )
 
@@ -65,7 +65,7 @@ class HRSSRuleEngine:
             if avg_volt < self.rules_config["avg_voltage_drop"]:
                 alerts.append(
                     "Power Instability: Tegangan rata-rata operasional sistem menurun. "
-                    "Sistem pergerakan lintasan secara serentak (simultaneous) mungkin kurang optimal pada voltase ini, pertimbangkan pola Standard untuk efisiensi yang lebih baik."
+                    "Pola pergerakan dengan akselerasi tinggi atau rute dinamis (Optimized) mungkin kurang optimal pada kondisi drop tegangan ini. Pertimbangkan untuk beralih ke pola Standard demi menstabilkan kelistrikan."
                 )
 
         logger.info("Rule evaluation complete. Alerts triggered: %d", len(alerts))

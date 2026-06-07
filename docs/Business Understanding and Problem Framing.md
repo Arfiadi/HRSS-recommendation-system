@@ -11,7 +11,7 @@ Dalam dataset tersedia dua jenis operational scenario utama, yaitu:
 - standard operation (non-optimized)
 - optimized operation
 
-Optimized operation menggunakan strategi simultaneous movement, yaitu conveyor middle dapat bergerak horizontal dan vertikal secara bersamaan untuk meningkatkan efisiensi operasional dan mengurangi konsumsi energi.
+Optimized operation menggunakan strategi smart routing/path optimization pada Warehouse Management System (WMS) yang mengurangi jarak tempuh total dan idle time antar pergerakan, sehingga menghemat konsumsi energi secara signifikan. Analisis data empiris menunjukkan bahwa pergerakan fisik conveyor dan rail pada kedua skenario tetap dominan sekuensial (dengan overlap pergerakan simultan hanya sekitar ~2-3%), sehingga optimasi terjadi pada level lintasan/alur rute operasional, bukan pergerakan diagonal simultan pada hardware.
 
 Berdasarkan kondisi tersebut, project ini bertujuan membangun sistem analitik dan rekomendasi operasional industri yang mampu:
 - mengenali pola operasi efisien
@@ -121,7 +121,7 @@ Output utama sistem meliputi:
 Contoh recommendation:
 - **Operational Status:** NON-OPTIMIZED
 - **Recommendation:** 
-  - → apply simultaneous movement
+  - → apply smart routing (optimasi lintasan)
   - → reduce idle movement
   - → use optimized movement pattern
 - **Expected Impact:**

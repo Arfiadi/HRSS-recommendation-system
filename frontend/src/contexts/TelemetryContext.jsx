@@ -1,5 +1,6 @@
 import React, { createContext, useState, useEffect, useRef, useContext } from 'react';
 
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 const TelemetryContext = createContext(null);
 
 export const TelemetryProvider = ({ children }) => {
@@ -10,6 +11,14 @@ export const TelemetryProvider = ({ children }) => {
   const [currentMode, setCurrentMode] = useState('Standard'); 
   const [chartData, setChartData] = useState([]);
   const [recommendation, setRecommendation] = useState(null);
+  
+  const scenarioRef = useRef(scenario);
+  const currentModeRef = useRef(currentMode);
+
+  useEffect(() => {
+    scenarioRef.current = scenario;
+    currentModeRef.current = currentMode;
+  }, [scenario, currentMode]);
   
   const [stats, setStats] = useState({
     totalPower: 0,
@@ -22,7 +31,7 @@ export const TelemetryProvider = ({ children }) => {
   useEffect(() => {
     const checkHealth = async () => {
       try {
-        const res = await fetch('http://localhost:8000/health');
+        const res = await fetch(`${API_BASE_URL}/`);
         if (res.ok) {
           setStatus('online');
         } else {
@@ -44,15 +53,12 @@ export const TelemetryProvider = ({ children }) => {
 
   useEffect(() => {
     stepIndexRef.current = 0;
-    if (isSimulating) {
-      runSimulationStep(scenario);
-    }
-  }, [scenario, isSimulating]);
+  }, [scenario]);
 
   const fetchRecommendation = async (telemetry) => {
     try {
-      const payload = { telemetry, current_mode: currentMode };
-      const res = await fetch('http://localhost:8000/api/v1/recommend', {
+      const payload = { telemetry, current_mode: currentModeRef.current };
+      const res = await fetch(`${API_BASE_URL}/api/v1/recommend`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload)
@@ -97,11 +103,11 @@ export const TelemetryProvider = ({ children }) => {
     }
   };
 
-  const runSimulationStep = async (currentScenario) => {
+  const runSimulationStep = async () => {
     setLoading(true);
     try {
       const idx = stepIndexRef.current;
-      const res = await fetch(`http://localhost:8000/api/v1/simulate/telemetry?scenario=${currentScenario}&index=${idx}`);
+      const res = await fetch(`${API_BASE_URL}/api/v1/simulate/telemetry?scenario=${scenarioRef.current}&index=${idx}`);
       if (!res.ok) throw new Error("Failed to fetch simulated telemetry");
       const telemetry = await res.json();
       await fetchRecommendation(telemetry);
@@ -116,22 +122,25 @@ export const TelemetryProvider = ({ children }) => {
   const startSimulation = () => {
     if (isSimulating) return;
     setIsSimulating(true);
-    simulationIntervalRef.current = setInterval(() => {
-      setScenario(prevScenario => {
-        runSimulationStep(prevScenario);
-        return prevScenario;
-      });
-    }, 2000);
   };
 
   const stopSimulation = () => {
     if (!isSimulating) return;
     setIsSimulating(false);
-    if (simulationIntervalRef.current) {
-      clearInterval(simulationIntervalRef.current);
-      simulationIntervalRef.current = null;
-    }
   };
+
+  useEffect(() => {
+    if (isSimulating) {
+      runSimulationStep();
+      simulationIntervalRef.current = setInterval(() => {
+        runSimulationStep();
+      }, 2000);
+      return () => {
+        clearInterval(simulationIntervalRef.current);
+        simulationIntervalRef.current = null;
+      };
+    }
+  }, [isSimulating]);
 
   const toggleSimulation = () => {
     if (isSimulating) {

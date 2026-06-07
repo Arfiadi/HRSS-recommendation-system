@@ -69,13 +69,13 @@ const LiveMonitoring = () => {
                     className={`toggle-btn std ${scenario === 'Standard' ? 'active' : ''}`}
                     onClick={() => setScenario('Standard')}
                   >
-                    Standard Rail
+                    Standard Operation
                   </button>
                   <button 
                     className={`toggle-btn opt ${scenario === 'Optimized' ? 'active' : ''}`}
                     onClick={() => setScenario('Optimized')}
                   >
-                    Simultaneous
+                    Smart Routing (Optimized)
                   </button>
                 </div>
               </div>
@@ -88,8 +88,8 @@ const LiveMonitoring = () => {
                   className="mode-select"
                   style={{ padding: '0.6rem' }}
                 >
-                  <option value="Standard">Standard Pattern</option>
-                  <option value="Optimized">Optimized Pattern</option>
+                  <option value="Standard">Standard Routing</option>
+                  <option value="Optimized">Smart Routing (Optimized)</option>
                 </select>
               </div>
             </div>

@@ -93,11 +93,11 @@ logs/
 
 # PyCaret / Models
 *.pkl
-!models/final_hrss_rf_model.pkl
+!/models/final_hrss_rf_model.pkl
 *.h5
 *.model
-models/*
-!models/final_hrss_rf_model.pkl
+/models/*
+!/models/final_hrss_rf_model.pkl
 
 # OS generated files
 .DS_Store

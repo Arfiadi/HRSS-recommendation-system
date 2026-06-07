@@ -16,7 +16,7 @@ const Sidebar = () => {
       <div className="sidebar-header">
         <h1>
           <Cpu className="nav-icon" style={{ color: 'var(--color-primary)' }} />
-          HRSS System
+          OptiRack HRSS
         </h1>
       </div>
       

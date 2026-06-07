@@ -15,7 +15,7 @@ const TopHeader = () => {
       case '/live': return 'Live Monitoring';
       case '/analytics': return 'Historical Analytics';
       case '/settings': return 'System Settings';
-      default: return 'HRSS Dashboard';
+      default: return 'OptiRack HRSS Dashboard';
     }
   };
 

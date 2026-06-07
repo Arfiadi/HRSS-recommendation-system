@@ -67,7 +67,7 @@ const Overview = () => {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 'var(--gap-xl)' }}>
       <div>
-        <h1>HRSS Operational Efficiency</h1>
+        <h1>OptiRack HRSS Operational Efficiency</h1>
         <p>High-level summary of High Rack Storage System movement efficiency and energy consumption.</p>
       </div>
 

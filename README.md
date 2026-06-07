@@ -7,6 +7,15 @@
 
 ---
 
+## 🌐 Live Demo & API Access
+- **Frontend Dashboard**: [https://hrss-recommendation-system.vercel.app/](https://hrss-recommendation-system.vercel.app/)
+- **Backend API Docs (Swagger)**: [https://hrss-recommendation-api.onrender.com/docs](https://hrss-recommendation-api.onrender.com/docs)
+
+> [!WARNING]
+> **Cold Start Notice**: Backend API ini di-*host* menggunakan layanan Render versi gratis. Jika sistem tidak diakses selama 15 menit, server akan tertidur (*sleep*). Akibatnya, **loading pertama kali mungkin akan memakan waktu 30-50 detik** untuk membangunkan server. Setelah itu, performa akan kembali normal dan cepat.
+
+---
+
 ## 📌 Project Overview
 Modern industrial automation systems (conveyors, rails, automated storage) run continuously to move materials, which consumes a high amount of operational energy. Inefficient movement patterns lead to higher power usage, idle movements, and slower operational cycles. 
 

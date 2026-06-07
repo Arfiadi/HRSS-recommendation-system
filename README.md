@@ -12,7 +12,7 @@
 - **Backend API Docs (Swagger)**: [https://hrss-recommendation-api.onrender.com/docs](https://hrss-recommendation-api.onrender.com/docs)
 
 > [!WARNING]
-> **Cold Start Notice**: Backend API ini di-*host* menggunakan layanan Render versi gratis. Jika sistem tidak diakses selama 15 menit, server akan tertidur (*sleep*). Akibatnya, **loading pertama kali mungkin akan memakan waktu 30-50 detik** untuk membangunkan server. Setelah itu, performa akan kembali normal dan cepat.
+> **Cold Start Notice**: The backend API is hosted on Render's free tier. If the system is not accessed for 15 minutes, the server will go to sleep. As a result, **the first initial loading may take 30-50 seconds** to wake the server up. Subsequent requests will be fast and normal.
 
 ---
 
@@ -100,15 +100,15 @@ source venv/bin/activate
 ```
 
 ### 3. Install Dependencies
-We use `pyproject.toml` for modern dependency management. We have separated the libraries based on functionality to optimize the deployment memory footprint:
+We use `pyproject.toml` for modern dependency management. We have separated the libraries based on functionality to save deployment memory size:
 ```bash
-# Untuk Server Produksi API saja (Sangat Ringan)
+# For Production API Server only (Lightweight)
 pip install -e .[api]
 
-# Untuk Pengembangan / Development (Termasuk Testing)
+# For Development (Includes Testing tools)
 pip install -e .[api,dev]
 
-# Untuk Data Scientist (Training & Visualisasi)
+# For Data Scientists (Training & Visualization tools)
 pip install -e .[api,train,notebooks]
 ```
 

@@ -76,6 +76,8 @@ data/*
 !data/raw/
 data/raw/*
 !data/raw/.keep
+!data/raw/HRSS_normal_standard.csv
+!data/raw/HRSS_normal_optimized.csv
 !data/processed/
 data/processed/*
 !data/processed/.keep

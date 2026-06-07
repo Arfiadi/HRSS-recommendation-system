@@ -15,11 +15,11 @@ echo.
 
 :: Memeriksa apakah virtual environment (.venv) tersedia
 if exist .venv\Scripts\python.exe (
-    echo [System] Mengaktifkan virtual environment (.venv)...
+    echo [System] Mengaktifkan virtual environment venv...
     call .venv\Scripts\activate.bat
     python run.py
 ) else (
-    echo [System] Virtual environment (.venv) tidak ditemukan.
+    echo [System] Virtual environment venv tidak ditemukan.
     echo [System] Menjalankan menggunakan Python sistem...
     python run.py
 )

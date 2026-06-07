@@ -122,3 +122,82 @@ p { color: var(--text-secondary); }
   animation: pulseGlow 2s infinite;
   border-color: rgba(255, 0, 60, 0.5);
 }
+
+/* 
+  ==========================================================================
+  ACCESSIBILITY: KEYBOARD NAVIGATION & CUSTOM FOCUS INDICATORS (WCAG 2.1)
+  ==========================================================================
+  Provides high-contrast, cybernetic-themed focus rings for all interactive 
+  elements to ensure excellent readability and keyboard navigation capability.
+  Colors used: Neon Cyan (primary focus outline) and Electric Purple (glow shadow).
+*/
+
+/* 1. Global Reset & Fallback for Focusable Elements */
+*:focus {
+  /* Default fallback focus style for browsers that do not support :focus-visible */
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+}
+
+*:focus:not(:focus-visible) {
+  /* Remove custom focus rings for pointer (mouse/touch) interactions to reduce noise */
+  outline: none;
+  box-shadow: none;
+}
+
+/* 2. Custom Focus-Visible Styles for Keyboard Navigation */
+*:focus-visible {
+  /* Neon cyan outline for strong contrast against the dark background */
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  /* Dual-glow effect: Electric Purple outline backing + Neon Cyan outer ambient glow */
+  box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.6), 
+              0 0 12px rgba(0, 240, 255, 0.8);
+  /* Smooth transition for outline offset and glow */
+  transition: outline-offset var(--transition-fast), box-shadow var(--transition-fast);
+}
+
+/* 3. Specific Overrides and Enhancements for Interactive Elements */
+
+/* Anchors and Links */
+a:focus-visible {
+  /* Ensure focus ring doesn't get clipped by nearby text, and matches inline shapes */
+  border-radius: var(--radius-sm);
+  outline-offset: 2px;
+}
+
+/* Buttons and Clickable Elements */
+button:focus-visible,
+[role="button"]:focus-visible,
+.btn:focus-visible {
+  /* Match the element's border radius perfectly */
+  border-radius: inherit;
+  outline-offset: 2px;
+}
+
+/* Form Inputs, Select Boxes, and Textareas */
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible {
+  /* Inward/tighter outline for form fields to prevent overlapping with adjacent inputs */
+  outline: 2px solid var(--color-secondary); /* Electric Purple outline */
+  outline-offset: 1px;
+  border-color: var(--color-primary) !important; /* Force border to neon cyan on focus */
+  /* Neon Cyan outer glow combined with Electric Purple shadow */
+  box-shadow: 0 0 0 2px rgba(138, 43, 226, 0.4),
+              0 0 8px rgba(0, 240, 255, 0.6);
+}
+
+/* Toggle Buttons / Custom Checked Controls
+   (Ensures keyboard focus is visible on the custom styled components when the hidden checkbox is focused) */
+input[type="checkbox"]:focus-visible + label,
+input[type="checkbox"]:focus-visible + .slider,
+input[type="checkbox"]:focus-visible + .toggle-track,
+input[type="radio"]:focus-visible + label {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 3px;
+  box-shadow: 0 0 0 4px rgba(138, 43, 226, 0.6), 
+              0 0 10px rgba(0, 240, 255, 0.8);
+  border-radius: var(--radius-sm);
+}
+

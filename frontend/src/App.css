@@ -646,3 +646,160 @@
 @keyframes spin {
   to { transform: rotate(360deg); }
 }
+
+/* 
+  ==========================================================================
+  RESPONSIVE DESIGN & MEDIA QUERIES (TABLET & MOBILE)
+  ==========================================================================
+  Implements WCAG 2.1 responsive layout guidelines, ensuring all content 
+  fits within the viewport on tablet and mobile screens with no horizontal 
+  scrolling and consistent typography and pacing.
+*/
+
+/* --- Tablet and Small Desktop Viewports (max-width: 1024px) --- */
+@media screen and (max-width: 1024px) {
+  /* Stack the main dashboard grid vertically (1 column) */
+  .dashboard-grid {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Stack main content layout grids in Overview page (1 column) */
+  .content-area div[style*="1.6fr 1fr"],
+  .content-area div[style*="1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* --- Mobile Viewports (max-width: 768px) --- */
+@media screen and (max-width: 768px) {
+  /* Stack global app-layout vertically to prevent side-by-side squeezing on small screens */
+  .app-layout {
+    flex-direction: column !important;
+    height: auto !important;
+    width: 100% !important;
+    overflow-y: auto !important;
+  }
+
+  /* Transform the sidebar into a horizontal top/navigation bar on mobile */
+  .sidebar {
+    width: 100% !important;
+    height: auto !important;
+    border-right: none !important;
+    border-bottom: 1px solid var(--glass-border) !important;
+  }
+
+  .sidebar-header {
+    height: auto !important;
+    padding: 1rem !important;
+    justify-content: center !important;
+  }
+
+  .sidebar-nav {
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    padding: 0.5rem !important;
+    gap: 0.5rem !important;
+  }
+
+  .nav-item {
+    padding: 8px 12px !important;
+    font-size: 0.8rem !important;
+    justify-content: center !important;
+    border-right: none !important;
+  }
+  
+  .nav-item.active {
+    border-right: none !important;
+    border-bottom: 3px solid var(--color-primary) !important;
+  }
+
+  /* Allow main wrapper to stretch full width and scroll naturally */
+  .main-wrapper {
+    height: auto !important;
+    min-height: calc(100vh - 120px) !important;
+    overflow: visible !important;
+  }
+
+  /* Reduce content area padding for mobile screens */
+  .content-area {
+    padding: 1rem !important;
+    overflow-y: visible !important;
+  }
+
+  /* Reduce main application container padding */
+  .app-container {
+    padding: 0.75rem !important;
+    gap: 1rem !important;
+  }
+
+  /* Stack .kpi-row as a 2x2 grid */
+  .kpi-row {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  /* Stack Overview page's inline styled 4-column KPI cards grid as a 2x2 grid */
+  div[style*="repeat(4, 1fr)"] {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 1rem !important;
+  }
+
+  /* Stack the Components Status nodes grid (2 columns inline style grid) to 1 column */
+  .glass-panel h3 + div[style*="grid"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Ensure the inline-styled grid inside Live Monitoring simulation controls panel also stacks */
+  .glass-panel div[style*="grid-template-columns: 1fr 1fr"] {
+    grid-template-columns: 1fr !important;
+    gap: 1rem !important;
+  }
+
+  /* Wrap the .top-bar layout (logo-section and status-badge) to stack or wrap cleanly */
+  .top-bar {
+    flex-wrap: wrap !important;
+    gap: 1rem !important;
+    padding: 1rem !important;
+    justify-content: center !important;
+  }
+
+  /* Wrap the layout-level .top-header for consistent alignment on mobile */
+  .top-header {
+    flex-wrap: wrap !important;
+    height: auto !important;
+    padding: 1rem !important;
+    gap: 1rem !important;
+    justify-content: center !important;
+  }
+
+  /* Ensure charts and glass panels do not overflow the screen width */
+  .glass-panel,
+  .chart-container,
+  .chart-wrapper {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+}
+
+/* --- Tiny Mobile Viewports (max-width: 480px) --- */
+@media screen and (max-width: 480px) {
+  /* Stack KPI cards to a single column for very narrow viewports */
+  .kpi-row,
+  div[style*="repeat(4, 1fr)"] {
+    grid-template-columns: 1fr !important;
+  }
+
+  /* Further adjust top bar to stack vertically */
+  .top-bar {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+}
+
+/* Enforce no horizontal scrolling at root levels */
+html, body {
+  max-width: 100vw !important;
+  overflow-x: hidden !important;
+}
+

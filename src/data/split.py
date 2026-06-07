@@ -26,12 +26,24 @@ def create_and_save_splits(
     """
     os.makedirs(splits_dir, exist_ok=True)
 
-    X = df[MODEL_FEATURE_COLUMNS]
-    y = df[[TARGET_COLUMN]]
-
-    X_train, X_test, y_train, y_test = train_test_split(
-        X, y, test_size=test_size, random_state=seed, stratify=y,
-    )
+    # Chronological Split per class to prevent Time-Series Leakage
+    train_dfs = []
+    test_dfs = []
+    
+    for op_type in df[TARGET_COLUMN].unique():
+        class_df = df[df[TARGET_COLUMN] == op_type].copy()
+        split_idx = int(len(class_df) * (1 - test_size))
+        
+        train_dfs.append(class_df.iloc[:split_idx])
+        test_dfs.append(class_df.iloc[split_idx:])
+        
+    train_df = pd.concat(train_dfs, ignore_index=True)
+    test_df = pd.concat(test_dfs, ignore_index=True)
+    
+    X_train = train_df[MODEL_FEATURE_COLUMNS]
+    y_train = train_df[[TARGET_COLUMN]]
+    X_test = test_df[MODEL_FEATURE_COLUMNS]
+    y_test = test_df[[TARGET_COLUMN]]
 
     X_train.to_csv(os.path.join(splits_dir, "X_train.csv"), index=False)
     X_test.to_csv(os.path.join(splits_dir, "X_test.csv"), index=False)

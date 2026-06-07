@@ -131,7 +131,9 @@ To easily start both the FastAPI server and the modern React/Vite dashboard simu
 ```bash
 python run.py
 ```
-This script will automatically verify dependencies, activate environments, and start both services.
+> **Windows Users**: You can also simply double-click the `run.bat` file in the project root to start the system without opening a terminal manually.
+
+These scripts will automatically verify dependencies, activate environments, and start both services.
 * **Frontend Dashboard**: `http://localhost:5173`
 * **Backend API Docs**: `http://localhost:8000/docs`
 

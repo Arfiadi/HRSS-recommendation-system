@@ -26,35 +26,53 @@ def generate_decision(
     Returns:
         Tuple berisi (risk_level, primary_recommendation).
     """
-    # Identifikasi selisih kondisi (Switch Logic)
-    switch_recommended = current_mode.strip().lower() != predicted_mode.strip().lower()
+    # Default values
+    risk_level = "Optimal Efficiency"
+    primary_recommendation = "Kondisi pergerakan ideal. Pertahankan konfigurasi saat ini."
 
-    # Pemetaan Tingkat Inefisiensi
-    if not switch_recommended and len(rule_alerts) == 0:
-        risk_level = "Optimal Efficiency"
-        primary_recommendation = (
-            f"Kondisi pergerakan ideal. Pertahankan mesin pada mode {current_mode} untuk efisiensi energi maksimal."
-        )
+    current = current_mode.strip().lower()
+    predicted = predicted_mode.strip().lower()
 
-    elif switch_recommended and len(rule_alerts) == 0:
-        risk_level = "Sub-optimal Movement"
-        primary_recommendation = (
-            f"Pola pergerakan terdeteksi kurang efisien. "
-            f"Sistem merekomendasikan transisi ke mode {predicted_mode} untuk optimasi lintasan dan penghematan daya."
-        )
-
-    else:
-        # Jika ada inefisiensi ekstrem dari Rule Engine (misal: daya tinggi tapi minim gerak)
-        risk_level = "Critical Inefficiency"
-        if current_mode.strip().lower() == "optimized":
+    if len(rule_alerts) == 0:
+        if current == "standard" and predicted == "standard":
+            risk_level = "Sub-optimal Movement"
             primary_recommendation = (
-                "Terdeteksi pemborosan energi tinggi akibat pergerakan tidak wajar. "
-                "Sistem menyarankan kembali ke pola pergerakan Standard sementara untuk stabilisasi konsumsi daya."
+                "Sistem beroperasi pada rute Standard (Non-Optimized). "
+                "Sistem merekomendasikan transisi ke mode Optimized (Smart Routing) pada WMS "
+                "untuk memperpendek lintasan dan menghemat daya."
+            )
+        elif current == "standard" and predicted == "optimized":
+            risk_level = "Optimal Efficiency"
+            primary_recommendation = (
+                "Meskipun disetel ke Standard, pola pergerakan saat ini sangat efisien menyerupai mode Optimized. "
+                "Pertahankan performa ini atau lakukan transisi penuh ke mode Optimized."
+            )
+        elif current == "optimized" and predicted == "standard":
+            risk_level = "Sub-optimal Movement"
+            primary_recommendation = (
+                "Mesin disetel ke mode Optimized, namun pola pergerakan terdeteksi kurang efisien "
+                "(menyerupai rute panjang Standard). Periksa kembali algoritma WMS Anda, "
+                "optimasi lintasan tampaknya tidak berjalan semestinya."
+            )
+        elif current == "optimized" and predicted == "optimized":
+            risk_level = "Optimal Efficiency"
+            primary_recommendation = (
+                "Smart Routing berjalan sempurna. Konsumsi daya dan rute pergerakan sangat efisien. "
+                "Pertahankan mode Optimized."
+            )
+    else:
+        # Ada alert dari Rule Engine (Critical)
+        risk_level = "Critical Inefficiency"
+        if current == "optimized":
+            primary_recommendation = (
+                "Terdeteksi beban daya ekstrem atau anjloknya tegangan! "
+                "Mode Optimized (Smart Routing) mungkin terlalu agresif membebani motor rel. "
+                "Sistem menyarankan kembali ke mode Standard sementara untuk menstabilkan kelistrikan."
             )
         else:
             primary_recommendation = (
-                "Terdeteksi pemborosan energi tinggi akibat pergerakan tidak wajar. "
-                "Sistem menyarankan tetap di pola Standard dan meninjau ulang algoritma routing (WMS)."
+                "Terdeteksi beban daya ekstrem atau anjloknya tegangan pada mode Standard. "
+                "Kurangi beban operasional secara manual atau jadwalkan inspeksi kelistrikan motor."
             )
 
     logger.info("Decision generated. Efficiency Status: %s", risk_level)

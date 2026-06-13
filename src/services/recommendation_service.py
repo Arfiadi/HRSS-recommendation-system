@@ -62,12 +62,6 @@ class RecommendationService:
             "probability_optimized": prob_optimized,
             "operational_risk_level": risk_level,
             "primary_recommendation": primary_recommendation,
-            "technical_alerts": (
-                alerts
-                if alerts
-                else [
-                    "Semua metrik mekanis dan kelistrikan HRSS berada dalam batas normal."
-                ]
-            ),
+            "technical_alerts": alerts,
             "efficiency_score": eff_score,
         }

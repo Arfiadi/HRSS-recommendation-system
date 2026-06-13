@@ -36,9 +36,9 @@ def calculate_efficiency_score(
 
     # 2. Penalti dari Rule Engine (Anomali Kelistrikan Fisik)
     for alert in rule_alerts:
-        if "Extreme Power Load" in alert:
+        if "Beban Daya Ekstrem" in alert:
             deduction += 15.0
-        elif "Voltage Sag" in alert:
+        elif "Tegangan Anjlok" in alert:
             deduction += 25.0
 
     score = max(0.0, min(100.0, base_score - deduction))

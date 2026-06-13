@@ -22,10 +22,10 @@ Modern industrial automation systems (conveyors, rails, automated storage) run c
 This project implements an **Industrial Operational Recommendation System** using telemetry sensor data from the **High Rack Storage System (HRSS)** at the Smart Factory Lemgo, Germany. The system processes time-series telemetry data, runs automated machine learning experiments to classify the operations, and provides actionable recommendations to optimize operational strategy (e.g., using smart path routing / warehouse path optimization) to reduce energy consumption.
 
 ### Key Objectives
-* **Analyze Operational Behavior**: Compare standard (traditional routing) and optimized (smart routing) scenarios.
+* **Hybrid AI Architecture**: Combines Machine Learning (Random Forest) for pattern recognition with a deterministic Rule Engine (Domain Knowledge) for safety overrides (Neuro-Symbolic approach).
 * **Operational Pattern Recognition**: Build binary classification models (`operation_type`: `0` for standard, `1` for optimized) based on sensor telemetry.
-* **Energy Consumption Analytics**: Understand the correlation between movement patterns and electrical power consumption.
-* **Decision Support & Recommendations**: Provide real-time actionable recommendations to shift operational states toward optimal configurations.
+* **Prescriptive Analytics**: Provide real-time actionable recommendations to shift operational states (WMS routing) toward optimal configurations.
+* **OEE-style Scoring**: Implement an industrial-grade efficiency scoring system (0-100%) that penalizes inefficient routing and physical electrical anomalies (e.g., Extreme Power Loads, Voltage Sags).
 
 ---
 
@@ -33,6 +33,7 @@ This project implements an **Industrial Operational Recommendation System** usin
 * **Data Processing & ML Pipeline**: `pandas`, `numpy`, `scikit-learn`
 * **MLOps & Experiment Tracking**: `MLflow` (for tracking runs, metrics, models, and plotting learning curves)
 * **API Endpoints**: `FastAPI` & `Uvicorn` (for deployment-ready model serving)
+* **Frontend Dashboard**: `React`, `Vite`, `TailwindCSS`
 * **DevOps**: `Docker` & `pytest`
 
 ---
@@ -49,15 +50,15 @@ HRSS_recommendation_system/
 ├── outputs/                  # Generated figures (confusion matrix, learning curves)
 ├── src/                      # Core production source code
 │   ├── api/                  # FastAPI app and endpoint routes
-│   ├── core/                 # Domain schema and problem definitions
+│   ├── core/                 # Core problem definitions and global constants
 │   ├── data/                 # Ingestion, preprocessing, and splitting pipeline
-│   ├── features/             # Feature builders and validators
+│   ├── features/             # Feature builders and stateless aggregates
 │   ├── models/               # Model training, offline baking, and local loading
 │   ├── pipeline/             # Training and Inference orchestration pipelines
-│   ├── recommendation/       # Rule engines, scoring, and decision policy
+│   ├── recommendation/       # Hybrid expert system: Rules, scoring, and prescriptive policy
 │   ├── scripts/              # CI/CD scripts (e.g., export_champion.py)
 │   └── services/             # Unified prediction and recommendation services
-└── tests/                    # Integration and unit tests
+└── tests/                    # Integration and unit test suite
 ```
 
 > **Note**: For deep-dives into specific folders, please read the localized `README.md` inside `data/`, `src/api/`, and `experiments/`. For architecture choices, see the `docs/` folder.

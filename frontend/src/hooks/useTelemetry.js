@@ -57,11 +57,12 @@ export function useTelemetry() {
     const noise = () => (Math.random() - 0.5) * 0.05;
     
     // Adjust values to trigger/not trigger specific rules in rule_engine.py
+    // Tambahkan chance 10% untuk memicu anomali fisik di mode Standard
+    const triggerAnomaly = !isOpt && Math.random() < 0.1;
+    
     return {
       Timestamp: timestamp,
-      // Weg (displacement) - ranges around 0.1 to 1.5
-      // If optimized: high coordinated movements (1.2m)
-      // If standard: small movements (0.08m horizontal rail) to trigger rail inefficiency
+      // Weg (displacement) - koordinat posisi
       I_w_BLO_Weg: isOpt ? 1.2 + noise() : 0.02 + noise(),
       I_w_BHL_Weg: isOpt ? 1.1 + noise() : 0.02 + noise(),
       I_w_BHR_Weg: isOpt ? 1.1 + noise() : 0.02 + noise(),
@@ -69,21 +70,23 @@ export function useTelemetry() {
       I_w_HR_Weg: isOpt ? 1.4 + noise() : 0.08 + noise(),
       I_w_HL_Weg: isOpt ? 1.4 + noise() : 0.08 + noise(),
       
-      // Power (Watts) - much higher in standard mode (triggers > 15W check)
-      O_w_BLO_power: isOpt ? 0.8 + noise() : 2.5 + noise(),
-      O_w_BHL_power: isOpt ? 1.0 + noise() : 3.8 + noise(),
-      O_w_BHR_power: isOpt ? 1.0 + noise() : 3.8 + noise(),
-      O_w_BRU_power: isOpt ? 0.6 + noise() : 2.2 + noise(),
-      O_w_HR_power: isOpt ? 0.9 + noise() : 4.5 + noise(),
-      O_w_HL_power: isOpt ? 0.9 + noise() : 4.5 + noise(),
+      // Power (Watts) - Skala asli puluhan ribu Watt
+      // Jika anomaly, kita buat total power tembus 80.000W
+      O_w_BLO_power: isOpt ? 6000 + (noise() * 1000) : (triggerAnomaly ? 12000 : 8000 + (noise() * 1000)),
+      O_w_BHL_power: isOpt ? 8000 + (noise() * 1000) : (triggerAnomaly ? 15000 : 9000 + (noise() * 1000)),
+      O_w_BHR_power: isOpt ? 8000 + (noise() * 1000) : (triggerAnomaly ? 15000 : 9000 + (noise() * 1000)),
+      O_w_BRU_power: isOpt ? 5000 + (noise() * 1000) : (triggerAnomaly ? 8000 : 6000 + (noise() * 1000)),
+      O_w_HR_power: isOpt ? 8000 + (noise() * 1000) : (triggerAnomaly ? 16000 : 10000 + (noise() * 1000)),
+      O_w_HL_power: isOpt ? 8000 + (noise() * 1000) : (triggerAnomaly ? 16000 : 10000 + (noise() * 1000)),
       
-      // Voltage (Volts) - drops under 23.5V in standard (triggers Voltage Sag)
-      O_w_BLO_voltage: isOpt ? 24.1 + noise() : 23.2 + noise(),
-      O_w_BHL_voltage: isOpt ? 24.0 + noise() : 23.1 + noise(),
-      O_w_BHR_voltage: isOpt ? 24.0 + noise() : 23.1 + noise(),
-      O_w_BRU_voltage: isOpt ? 24.1 + noise() : 23.3 + noise(),
-      O_w_HR_voltage: isOpt ? 24.0 + noise() : 23.2 + noise(),
-      O_w_HL_voltage: isOpt ? 24.0 + noise() : 23.2 + noise(),
+      // Voltage (Volts) - Rata-rata 24V - 50V
+      // Jika anomaly, kita jatuhkan tegangan HL/HR di bawah 20V (Voltage Sag)
+      O_w_BLO_voltage: isOpt ? 28.1 + noise() : 25.2 + noise(),
+      O_w_BHL_voltage: isOpt ? 28.0 + noise() : 25.1 + noise(),
+      O_w_BHR_voltage: isOpt ? 28.0 + noise() : 25.1 + noise(),
+      O_w_BRU_voltage: isOpt ? 28.1 + noise() : 25.3 + noise(),
+      O_w_HR_voltage: isOpt ? 28.0 + noise() : (triggerAnomaly ? 15.0 : 25.2 + noise()),
+      O_w_HL_voltage: isOpt ? 28.0 + noise() : (triggerAnomaly ? 15.0 : 25.2 + noise()),
     };
   };
 

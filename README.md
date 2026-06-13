@@ -29,7 +29,7 @@ Explore the live application and API documentation:
 | Service | Link | Description |
 |:---|:---|:---|
 | **Frontend Dashboard** | [hrss-recommendation-system.vercel.app](https://hrss-recommendation-system.vercel.app/) | Interactive React UI for system monitoring |
-| **Backend API (Swagger)** | [hrss-recommendation-api.onrender.com/docs](https://hrss-recommendation-api.onrender.com/docs) | Complete API documentation and playground |
+| **Backend API (Swagger)** | [hrss-recommendation-system.onrender.com/docs](https://hrss-recommendation-system.onrender.com/docs) | Complete API documentation and playground |
 
 > [!WARNING]
 > **Cold Start Notice:** The backend API is hosted on Render's free tier. If the system is inactive for 15 minutes, the server enters sleep mode. Consequently, **the initial request may take 30-50 seconds** to wake the server. Subsequent requests will process at normal speeds.

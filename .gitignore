@@ -113,3 +113,13 @@ Thumbs.db
 # CatBoost and PyCaret Temp Files
 catboost_info/
 experiments/notebooks/catboost_info/
+
+# IDEs and Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Linting and Type Checking
+.mypy_cache/
+.ruff_cache/

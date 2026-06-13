@@ -43,10 +43,10 @@ class HRSSRuleEngine:
             tot_pwr = df["total_power"].values[0]
             if tot_pwr > self.rules_config["total_power_extreme"]:
                 alerts.append(
-                    "Extreme Power Load: Total power consumption across all axes "
-                    f"is exceptionally high ({tot_pwr:.0f}W). This may indicate "
-                    "simultaneous heavy-load movements. Consider staggering "
-                    "operations to reduce peak power demand."
+                    "Beban Daya Ekstrem: Total konsumsi daya pada seluruh motor "
+                    f"sangat tinggi ({tot_pwr:.0f}W). Ini mengindikasikan "
+                    "pergerakan beban berat secara bersamaan. Pertimbangkan jeda "
+                    "operasi untuk mengurangi lonjakan permintaan daya."
                 )
 
         # Rule 2: Voltage Sag Under Load (Rail Motors HL & HR)
@@ -66,10 +66,10 @@ class HRSSRuleEngine:
                 if (pwr > self.rules_config["rail_motor_power_active"]
                         and vlt < self.rules_config["rail_voltage_sag_threshold"]):
                     alerts.append(
-                        f"Voltage Sag ({axis}): Rail motor {axis} is drawing "
-                        f"{pwr:.0f}W but voltage has dropped to {vlt:.1f}V. "
-                        "This indicates electrical instability under heavy load. "
-                        "Consider switching to Standard routing to stabilize power delivery."
+                        f"Tegangan Anjlok ({axis}): Motor rel {axis} menarik daya "
+                        f"sebesar {pwr:.0f}W namun tegangan jatuh ke {vlt:.1f}V. "
+                        "Ini mengindikasikan ketidakstabilan kelistrikan di bawah beban berat. "
+                        "Segera hentikan rute agresif untuk menstabilkan kelistrikan."
                     )
 
         logger.info("Rule evaluation complete. Alerts triggered: %d", len(alerts))

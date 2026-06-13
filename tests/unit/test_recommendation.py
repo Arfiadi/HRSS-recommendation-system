@@ -58,13 +58,13 @@ def test_rule_engine_anomalies():
 
 
 def test_decision_policy():
-    # Skenario 1: Normal
+    # Skenario 1: Standard routing, ML confirms standard (Inefficient route)
     risk, action = generate_decision("Standard", "Standard", 0.1, [])
-    assert risk == "Optimal Efficiency"
-
-    # Skenario 2: Medium Inefficiency (ML beda, no alerts)
-    risk, action = generate_decision("Standard", "Optimized", 0.9, [])
     assert risk == "Sub-optimal Movement"
+
+    # Skenario 2: Standard routing, tapi efisien seperti Optimized
+    risk, action = generate_decision("Standard", "Optimized", 0.9, [])
+    assert risk == "Optimal Efficiency"
 
     # Skenario 3: High Inefficiency (Alerts terpicu)
     risk, action = generate_decision(
@@ -75,21 +75,23 @@ def test_decision_policy():
 
 def test_scoring():
     df = pd.DataFrame([{}])
-    # Case 1: Optimized prob 80%, no alerts
+    # Case 1: Optimized prob 80% (0.8), no alerts
+    # Routing penalty = (1.0 - 0.8) * 20 = 4.0
+    # Score = 100 - 4 = 96.0
     score = calculate_efficiency_score(df, 0.8, [])
-    assert score == 80.0
+    assert score == 96.0
 
-    # Case 2: Penalti dari Extreme Power Load (80% - 25% = 55%)
-    score = calculate_efficiency_score(df, 0.8, ["Extreme Power Load alert"])
+    # Case 2: Standard prob 10% (0.1), no alerts
+    # Routing penalty = (1.0 - 0.1) * 20 = 18.0
+    # Score = 100 - 18 = 82.0
+    score = calculate_efficiency_score(df, 0.1, [])
+    assert score == 82.0
+
+    # Case 3: Optimized prob 1.0 (0 routing penalty), but Extreme Power Load (-15)
+    score = calculate_efficiency_score(df, 1.0, ["Extreme Power Load alert"])
+    assert score == 85.0
+
+    # Case 4: Standard prob 0.0 (routing penalty -20), plus Voltage Sag (-25)
+    score = calculate_efficiency_score(df, 0.0, ["Voltage Sag (HL): alert"])
     assert score == 55.0
-
-    # Case 3: Penalti dari Voltage Sag (80% - 30% = 50%)
-    score = calculate_efficiency_score(df, 0.8, ["Voltage Sag (HL): alert"])
-    assert score == 50.0
-
-    # Case 4: Batas bawah 0%
-    score = calculate_efficiency_score(
-        df, 0.2, ["Extreme Power Load alert", "Voltage Sag (HL): alert"]
-    )
-    assert score == 0.0
 

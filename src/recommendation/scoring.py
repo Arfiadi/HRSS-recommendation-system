@@ -24,19 +24,25 @@ def calculate_efficiency_score(
     Returns:
         Skor efisiensi operasional (float 0.0 - 100.0).
     """
-    # Base score adalah persentase probabilitas optimized (profil hemat energi)
-    base_score = probability_optimized * 100.0
-
-    # Pengurangan skor (penalti) jika ada rules yang terpicu
+    # Base score diasumsikan 100 (Kondisi mesin fisik sempurna)
+    base_score = 100.0
     deduction = 0.0
+
+    # 1. Penalti dari Machine Learning (Inefisiensi Rute)
+    # probability_optimized = 1.0 -> penalti 0 poin
+    # probability_optimized = 0.0 -> penalti 20 poin
+    routing_penalty = (1.0 - probability_optimized) * 20.0
+    deduction += routing_penalty
+
+    # 2. Penalti dari Rule Engine (Anomali Kelistrikan Fisik)
     for alert in rule_alerts:
         if "Extreme Power Load" in alert:
-            deduction += 25.0
+            deduction += 15.0
         elif "Voltage Sag" in alert:
-            deduction += 30.0
+            deduction += 25.0
 
     score = max(0.0, min(100.0, base_score - deduction))
 
-    logger.info("Efficiency score calculated: %.2f (base: %.2f, deductions: %.2f)", score, base_score, deduction)
+    logger.info("Efficiency score calculated: %.2f (routing penalty: %.2f, total deduction: %.2f)", score, routing_penalty, deduction)
     return float(round(score, 2))
 

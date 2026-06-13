@@ -39,8 +39,7 @@ ALL_SENSOR_COLUMNS = MOVEMENT_COLUMNS + POWER_COLUMNS + VOLTAGE_COLUMNS
 # ENGINEERED FEATURE NAMES
 # =========================================================
 ENGINEERED_FEATURES = [
-    "total_power", "avg_voltage", "total_movement",
-    "power_efficiency_ratio", "rail_activity", "conveyor_activity",
+    "total_power", "avg_voltage", "active_motor_count",
 ]
 
 # Full feature set used by the model (raw sensors + engineered)

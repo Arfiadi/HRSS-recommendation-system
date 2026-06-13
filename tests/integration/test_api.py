@@ -23,10 +23,7 @@ def test_api_endpoints():
         engineered_cols = [
             "total_power",
             "avg_voltage",
-            "total_movement",
-            "power_efficiency_ratio",
-            "rail_activity",
-            "conveyor_activity",
+            "active_motor_count",
         ]
         for col in engineered_cols:
             sample.pop(col, None)

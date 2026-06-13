@@ -30,7 +30,7 @@ This project implements an **Industrial Operational Recommendation System** usin
 ---
 
 ## 🛠️ Tech Stack & Key Tools
-* **Data Processing & ML Pipeline**: `pandas`, `numpy`, `scikit-learn`, `xgboost`
+* **Data Processing & ML Pipeline**: `pandas`, `numpy`, `scikit-learn`
 * **MLOps & Experiment Tracking**: `MLflow` (for tracking runs, metrics, models, and plotting learning curves)
 * **API Endpoints**: `FastAPI` & `Uvicorn` (for deployment-ready model serving)
 * **DevOps**: `Docker` & `pytest`

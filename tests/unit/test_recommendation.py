@@ -9,15 +9,16 @@ from src.recommendation.scoring import calculate_efficiency_score
 
 def test_rule_engine_normal():
     engine = HRSSRuleEngine()
-    # Data normal
+    # Data normal: daya wajar, tegangan stabil
     df = pd.DataFrame(
         [
             {
-                "rail_activity": 0.01,
-                "power_efficiency_ratio": 0.05,
-                "total_power": 5.0,
-                "total_movement": 0.1,
-                "avg_voltage": 24.0,
+                "total_power": 45000.0,
+                "avg_voltage": 28.0,
+                "O_w_HL_power": 12000.0,
+                "O_w_HL_voltage": 26.0,
+                "O_w_HR_power": 10000.0,
+                "O_w_HR_voltage": 26.0,
             }
         ]
     )
@@ -28,40 +29,32 @@ def test_rule_engine_normal():
 def test_rule_engine_anomalies():
     engine = HRSSRuleEngine()
 
-    # Test Rule 1: Rail Inefficiency
-    df_rail = pd.DataFrame(
+    # Test Rule 1: Extreme Power Load (total_power > 75000)
+    df_power = pd.DataFrame(
         [
             {
-                "rail_activity": 0.1,  # > 0.05
-                "power_efficiency_ratio": 0.005,  # < 0.01
+                "total_power": 80000.0,
             }
         ]
     )
-    alerts_rail = engine.evaluate_rules(df_rail)
-    assert any("Rail Inefficiency" in alert for alert in alerts_rail)
+    alerts_power = engine.evaluate_rules(df_power)
+    assert any("Extreme Power Load" in alert for alert in alerts_power)
 
-    # Test Rule 2: Inefficient High Power (Movement Inefficiency)
-    df_friction = pd.DataFrame(
-        [
-            {
-                "total_power": 20.0,  # > 15.0
-                "total_movement": 0.005,  # < 0.02
-            }
-        ]
-    )
-    alerts_friction = engine.evaluate_rules(df_friction)
-    assert any("Movement Inefficiency" in alert for alert in alerts_friction)
-
-    # Test Rule 3: Power Instability (Voltage Sag)
+    # Test Rule 2: Voltage Sag Under Load (HL motor active but voltage dropped)
     df_voltage = pd.DataFrame(
         [
             {
-                "avg_voltage": 22.0,  # < 23.5
+                "O_w_HL_power": 8000.0,   # > 5000 (active)
+                "O_w_HL_voltage": 15.0,    # < 20 (sag!)
+                "O_w_HR_power": 200.0,     # inactive
+                "O_w_HR_voltage": 0.0,
             }
         ]
     )
     alerts_voltage = engine.evaluate_rules(df_voltage)
-    assert any("Power Instability" in alert for alert in alerts_voltage)
+    assert any("Voltage Sag (HL)" in alert for alert in alerts_voltage)
+    # HR should NOT trigger because power is below active threshold
+    assert not any("Voltage Sag (HR)" in alert for alert in alerts_voltage)
 
 
 def test_decision_policy():
@@ -75,7 +68,7 @@ def test_decision_policy():
 
     # Skenario 3: High Inefficiency (Alerts terpicu)
     risk, action = generate_decision(
-        "Optimized", "Standard", 0.1, ["Power Instability alert"]
+        "Optimized", "Standard", 0.1, ["Extreme Power Load alert"]
     )
     assert risk == "Critical Inefficiency"
 
@@ -86,12 +79,17 @@ def test_scoring():
     score = calculate_efficiency_score(df, 0.8, [])
     assert score == 80.0
 
-    # Case 2: Penalti dari Rail Inefficiency (80% - 30% = 50%)
-    score = calculate_efficiency_score(df, 0.8, ["Rail Inefficiency alert"])
+    # Case 2: Penalti dari Extreme Power Load (80% - 25% = 55%)
+    score = calculate_efficiency_score(df, 0.8, ["Extreme Power Load alert"])
+    assert score == 55.0
+
+    # Case 3: Penalti dari Voltage Sag (80% - 30% = 50%)
+    score = calculate_efficiency_score(df, 0.8, ["Voltage Sag (HL): alert"])
     assert score == 50.0
 
-    # Case 3: Batas bawah 0%
+    # Case 4: Batas bawah 0%
     score = calculate_efficiency_score(
-        df, 0.2, ["Rail Inefficiency alert", "Movement Inefficiency alert"]
+        df, 0.2, ["Extreme Power Load alert", "Voltage Sag (HL): alert"]
     )
     assert score == 0.0
+

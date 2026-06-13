@@ -30,10 +30,8 @@ def calculate_efficiency_score(
     # Pengurangan skor (penalti) jika ada rules yang terpicu
     deduction = 0.0
     for alert in rule_alerts:
-        if "Rail Inefficiency" in alert:
-            deduction += 30.0
-        elif "Overload/Friction" in alert:
-            deduction += 40.0
+        if "Extreme Power Load" in alert:
+            deduction += 25.0
         elif "Voltage Sag" in alert:
             deduction += 30.0
 
@@ -41,3 +39,4 @@ def calculate_efficiency_score(
 
     logger.info("Efficiency score calculated: %.2f (base: %.2f, deductions: %.2f)", score, base_score, deduction)
     return float(round(score, 2))
+

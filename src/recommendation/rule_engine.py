@@ -2,7 +2,11 @@
 Rule Engine — Logika rekomendasi berbasis aturan domain industri.
 
 File ini berisi evaluasi aturan berbasis domain knowledge untuk HRSS
-seperti rail inefficiency, mechanical friction/overload, dan DC bus voltage sag.
+seperti extreme power load, voltage sag under load, dan smart routing opportunity.
+
+Threshold ditentukan berdasarkan analisis empiris distribusi data:
+- total_power: mean ~46000W, P95 ~70000W, P99 ~78000W, max ~112000W
+- Voltage per-axis (saat aktif): mean ~50V, P5 ~23V, min 0V
 """
 import pandas as pd
 import logging
@@ -12,18 +16,18 @@ logger = logging.getLogger(__name__)
 
 class HRSSRuleEngine:
     def __init__(self):
-        # Thresholds berdasarkan karakteristik fisik alat HRSS / Stacker Crane
+        # Thresholds berdasarkan analisis empiris distribusi data HRSS
         self.rules_config = {
-            "rail_activity_high": 0.05,
-            "power_efficiency_low": 0.01,
-            "total_power_high": 15.0,
-            "total_movement_low": 0.02,
-            "avg_voltage_drop": 23.5,  # Batas drop aman DC bus 24V
+            # Rule 1: Extreme Power Load — di atas P97 distribusi total_power
+            "total_power_extreme": 75000,
+            # Rule 2: Voltage Sag — tegangan motor rel turun saat menarik daya besar
+            "rail_motor_power_active": 5000,    # Watt — motor rel dianggap aktif
+            "rail_voltage_sag_threshold": 20.0,  # Volt — batas drop tegangan kritis
         }
 
     def evaluate_rules(self, df: pd.DataFrame) -> list:
         """
-        Domain Knowledge Engine: Evaluasi anomali mekanis dan kelistrikan spesifik HRSS.
+        Domain Knowledge Engine: Evaluasi anomali kelistrikan spesifik HRSS.
 
         Args:
             df: DataFrame satu baris yang berisi metrik engineered & raw.
@@ -33,40 +37,41 @@ class HRSSRuleEngine:
         """
         alerts = []
 
-        # Rule 1: Rail Inefficiency (Banyak gerak rel, efisiensi minim)
-        if "rail_activity" in df.columns and "power_efficiency_ratio" in df.columns:
-            rail_act = df["rail_activity"].values[0]
-            pwr_eff = df["power_efficiency_ratio"].values[0]
-            if (
-                rail_act > self.rules_config["rail_activity_high"]
-                and pwr_eff < self.rules_config["power_efficiency_low"]
-            ):
-                alerts.append(
-                    "Rail Inefficiency: Aktivitas sumbu rel tinggi namun rasio efisiensi daya sangat rendah. "
-                    "Pertimbangkan optimasi algoritma routing (shortest path) pada WMS."
-                )
-
-        # Rule 2: Inefficient High Power (Daya tinggi, pergerakan minim)
-        if "total_power" in df.columns and "total_movement" in df.columns:
+        # Rule 1: Extreme Power Load
+        # Terpicu jika total konsumsi daya seluruh motor melampaui batas P97.
+        if "total_power" in df.columns:
             tot_pwr = df["total_power"].values[0]
-            tot_mvt = df["total_movement"].values[0]
-            if (
-                tot_pwr > self.rules_config["total_power_high"]
-                and tot_mvt < self.rules_config["total_movement_low"]
-            ):
+            if tot_pwr > self.rules_config["total_power_extreme"]:
                 alerts.append(
-                    "Movement Inefficiency: Tarikan daya listrik (Watt) terpantau tinggi namun pergerakan mekanis rel sangat minim. "
-                    "Hal ini mengindikasikan adanya pergerakan idle (idle movement) yang menyebabkan pemborosan daya secara signifikan."
+                    "Extreme Power Load: Total power consumption across all axes "
+                    f"is exceptionally high ({tot_pwr:.0f}W). This may indicate "
+                    "simultaneous heavy-load movements. Consider staggering "
+                    "operations to reduce peak power demand."
                 )
 
-        # Rule 3: Electrical Power Instability (DC Bus)
-        if "avg_voltage" in df.columns:
-            avg_volt = df["avg_voltage"].values[0]
-            if avg_volt < self.rules_config["avg_voltage_drop"]:
-                alerts.append(
-                    "Power Instability: Tegangan rata-rata operasional sistem menurun. "
-                    "Pola pergerakan dengan akselerasi tinggi atau rute dinamis (Optimized) mungkin kurang optimal pada kondisi drop tegangan ini. Pertimbangkan untuk beralih ke pola Standard demi menstabilkan kelistrikan."
-                )
+        # Rule 2: Voltage Sag Under Load (Rail Motors HL & HR)
+        # Terpicu jika motor rel utama menarik daya besar NAMUN tegangannya
+        # turun di bawah batas kritis — indikasi ketidakstabilan kelistrikan.
+        hl_pwr_col = "O_w_HL_power"
+        hl_vlt_col = "O_w_HL_voltage"
+        hr_pwr_col = "O_w_HR_power"
+        hr_vlt_col = "O_w_HR_voltage"
+
+        required_cols = {hl_pwr_col, hl_vlt_col, hr_pwr_col, hr_vlt_col}
+        if required_cols.issubset(df.columns):
+            for axis, pcol, vcol in [("HL", hl_pwr_col, hl_vlt_col),
+                                      ("HR", hr_pwr_col, hr_vlt_col)]:
+                pwr = df[pcol].values[0]
+                vlt = df[vcol].values[0]
+                if (pwr > self.rules_config["rail_motor_power_active"]
+                        and vlt < self.rules_config["rail_voltage_sag_threshold"]):
+                    alerts.append(
+                        f"Voltage Sag ({axis}): Rail motor {axis} is drawing "
+                        f"{pwr:.0f}W but voltage has dropped to {vlt:.1f}V. "
+                        "This indicates electrical instability under heavy load. "
+                        "Consider switching to Standard routing to stabilize power delivery."
+                    )
 
         logger.info("Rule evaluation complete. Alerts triggered: %d", len(alerts))
         return alerts
+
